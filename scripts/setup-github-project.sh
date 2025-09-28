@@ -144,29 +144,147 @@ create_labels() {
 create_github_project() {
     log_info "Creating GitHub Project: $PROJECT_NAME"
 
-    # Create the project
     if [ "$DRY_RUN" = false ]; then
-        PROJECT_URL=$(gh project create --title "$PROJECT_NAME" --owner "@me" 2>/dev/null || echo "")
+        # Get user ID for project creation
+        USER_ID=$(gh api user --jq '.node_id' 2>/dev/null)
 
-        if [ -n "$PROJECT_URL" ]; then
-            log_success "Created project: $PROJECT_URL"
+        if [ -z "$USER_ID" ]; then
+            log_error "Failed to get user ID - authentication issue"
+            return 1
+        fi
 
-            # Extract project number from URL
-            PROJECT_NUMBER=$(echo "$PROJECT_URL" | grep -o '[0-9]*$')
-            echo "$PROJECT_NUMBER" > .github-project-number
+        # Create project via GraphQL API
+        PROJECT_DATA=$(gh api graphql -f query='
+        mutation($title: String!, $ownerId: ID!) {
+          createProjectV2(input: {ownerId: $ownerId, title: $title}) {
+            projectV2 {
+              id
+              number
+              url
+            }
+          }
+        }' -f title="$PROJECT_NAME" -f ownerId="$USER_ID" 2>/dev/null)
 
-            log_info "Project number saved to .github-project-number: $PROJECT_NUMBER"
+        if [ $? -eq 0 ] && [ -n "$PROJECT_DATA" ]; then
+            PROJECT_ID=$(echo "$PROJECT_DATA" | jq -r '.data.createProjectV2.projectV2.id' 2>/dev/null)
+            PROJECT_NUMBER=$(echo "$PROJECT_DATA" | jq -r '.data.createProjectV2.projectV2.number' 2>/dev/null)
+            PROJECT_URL=$(echo "$PROJECT_DATA" | jq -r '.data.createProjectV2.projectV2.url' 2>/dev/null)
 
-            # TODO: Set up custom fields via GraphQL API
-            log_warning "Custom project fields need to be configured manually in GitHub UI"
-            log_info "Recommended fields: Status (Backlog, Ready, In Progress, Review, Done)"
-            log_info "                   Priority (High, Medium, Low)"
-            log_info "                   Size (Small, Medium, Large)"
+            if [ "$PROJECT_ID" != "null" ] && [ -n "$PROJECT_ID" ]; then
+                echo "$PROJECT_NUMBER" > .github-project-number
+                echo "$PROJECT_ID" > .github-project-id
+
+                log_success "Created project: $PROJECT_URL"
+                log_info "Project ID: $PROJECT_ID"
+                log_info "Project Number: $PROJECT_NUMBER"
+
+                # Set up project fields
+                setup_project_fields "$PROJECT_ID"
+            else
+                log_error "Failed to parse project creation response"
+            fi
         else
-            log_error "Failed to create GitHub Project"
+            log_warning "GraphQL project creation failed, trying CLI method"
+
+            # Fallback to CLI method
+            PROJECT_URL=$(gh project create --title "$PROJECT_NAME" --owner "@me" 2>/dev/null || echo "")
+
+            if [ -n "$PROJECT_URL" ]; then
+                PROJECT_NUMBER=$(echo "$PROJECT_URL" | grep -o '[0-9]*$')
+                echo "$PROJECT_NUMBER" > .github-project-number
+                log_success "Created project (CLI): $PROJECT_URL"
+                log_warning "Custom fields need manual setup in GitHub UI"
+            else
+                log_error "Failed to create GitHub Project"
+            fi
         fi
     else
         echo "[DRY RUN] Would create project: $PROJECT_NAME"
+    fi
+}
+
+setup_project_fields() {
+    local project_id="$1"
+    log_info "Setting up project custom fields..."
+
+    # Add Status field
+    STATUS_RESULT=$(gh api graphql -f query='
+    mutation($projectId: ID!) {
+      createProjectV2Field(input: {
+        projectId: $projectId
+        dataType: SINGLE_SELECT
+        name: "Status"
+        singleSelectOptions: [
+          {name: "Backlog", color: GRAY}
+          {name: "Ready", color: YELLOW}
+          {name: "In Progress", color: BLUE}
+          {name: "Review", color: ORANGE}
+          {name: "Done", color: GREEN}
+        ]
+      }) {
+        projectV2Field {
+          id
+          name
+        }
+      }
+    }' -f projectId="$project_id" 2>/dev/null)
+
+    if [ $? -eq 0 ]; then
+        log_success "Added Status field"
+    else
+        log_warning "Failed to add Status field"
+    fi
+
+    # Add Priority field
+    PRIORITY_RESULT=$(gh api graphql -f query='
+    mutation($projectId: ID!) {
+      createProjectV2Field(input: {
+        projectId: $projectId
+        dataType: SINGLE_SELECT
+        name: "Priority"
+        singleSelectOptions: [
+          {name: "High", color: RED}
+          {name: "Medium", color: YELLOW}
+          {name: "Low", color: GREEN}
+        ]
+      }) {
+        projectV2Field {
+          id
+          name
+        }
+      }
+    }' -f projectId="$project_id" 2>/dev/null)
+
+    if [ $? -eq 0 ]; then
+        log_success "Added Priority field"
+    else
+        log_warning "Failed to add Priority field"
+    fi
+
+    # Add Size field
+    SIZE_RESULT=$(gh api graphql -f query='
+    mutation($projectId: ID!) {
+      createProjectV2Field(input: {
+        projectId: $projectId
+        dataType: SINGLE_SELECT
+        name: "Size"
+        singleSelectOptions: [
+          {name: "Small", color: GREEN}
+          {name: "Medium", color: YELLOW}
+          {name: "Large", color: RED}
+        ]
+      }) {
+        projectV2Field {
+          id
+          name
+        }
+      }
+    }' -f projectId="$project_id" 2>/dev/null)
+
+    if [ $? -eq 0 ]; then
+        log_success "Added Size field"
+    else
+        log_warning "Failed to add Size field"
     fi
 }
 
