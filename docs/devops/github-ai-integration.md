@@ -81,13 +81,45 @@ gh auth status
 gh repo view
 ```
 
-### ⚠️ Common Authentication Issues
+### ⚠️ Common Authentication Issues & Solutions
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `HTTP 401: Bad credentials` | Invalid or expired token | Run `gh auth login` to re-authenticate |
-| `Missing project scope` | Token lacks project permissions | Re-run `gh auth login` and grant all permissions |
-| `Repository not found` | Token lacks repo access | Verify repository name and permissions |
+| Error | Cause | Complete Solution |
+|-------|-------|-------------------|
+| `HTTP 401: Bad credentials` | Invalid/expired token | `unset GH_TOKEN && gh auth login --scopes "repo,read:org,project,gist,workflow"` |
+| `Missing project scope` | Token lacks project permissions | Re-authenticate and grant ALL permissions in browser |
+| `Validation Failed (HTTP 422)` | Label format error (fixed v2.0+) | Update to latest automation scripts |
+| `Authentication failed for Git` | HTTPS credential issues | `git remote set-url origin git@github.com:user/repo.git` |
+| `Repository not found` | Token lacks repo access | Verify repository name and re-authenticate |
+| `GraphQL createProjectV2 failed` | Missing project scope | Include `project` in scopes: `--scopes "repo,read:org,project,gist,workflow"` |
+
+### 🔧 Complete Authentication Reset Procedure
+
+**When automation fails with authentication errors:**
+
+```bash
+# Step 1: Clean slate - remove all conflicting tokens
+unset GH_TOKEN
+unset GITHUB_TOKEN
+gh auth logout
+
+# Step 2: Fresh authentication with all required scopes
+gh auth login --scopes "repo,read:org,project,gist,workflow"
+# Choose: GitHub.com → HTTPS → Yes → Login with browser
+# IMPORTANT: Grant ALL permissions in browser
+
+# Step 3: Verify authentication is working
+gh auth status
+# Must show: ✓ Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
+
+# Step 4: Test basic API access
+gh api user --jq '.login'  # Should return your username
+
+# Step 5: Switch Git remote to SSH for reliable operations
+git remote set-url origin git@github.com:yourusername/yourrepo.git
+
+# Step 6: Run automation
+./scripts/setup-github-project.sh --repo yourusername/yourrepo
+```
 
 ### 🛠️ Manual Fallback Options
 
@@ -434,9 +466,38 @@ jobs:
 - **Project Health**: Track completion rates and cycle times
 - **AI Usage**: Monitor Claude API usage and effectiveness
 
+### 🚀 Latest Automation Enhancements (v2.0)
+
+#### New Features & Bug Fixes
+- **✅ Fixed Label Parsing**: Resolved shell syntax errors in label creation
+- **✅ GraphQL Project Creation**: Advanced project setup with custom fields
+- **✅ Authentication Recovery**: Comprehensive error handling and fallback methods
+- **✅ Custom Field Automation**: Status, Priority, and Size fields created automatically
+- **✅ Git Authentication**: SSH fallback for reliable repository operations
+
+#### Enhanced Project Field Setup
+The automation now automatically creates these custom fields:
+
+**Status Field (Single Select)**:
+- 🔘 Backlog (Gray)
+- 🟡 Ready (Yellow)
+- 🔵 In Progress (Blue)
+- 🟠 Review (Orange)
+- 🟢 Done (Green)
+
+**Priority Field (Single Select)**:
+- 🔴 High (Red)
+- 🟡 Medium (Yellow)
+- 🟢 Low (Green)
+
+**Size Field (Single Select)**:
+- 🟢 Small (Green) - 1-2 days
+- 🟡 Medium (Yellow) - 3-5 days
+- 🔴 Large (Red) - 1+ weeks
+
 ### Detailed Script Operations
 
-#### What setup-github-project.sh Does Step-by-Step
+#### What setup-github-project.sh v2.0 Does Step-by-Step
 
 **Repository Configuration:**
 ```bash
@@ -458,13 +519,32 @@ gh api -X PATCH repos/OWNER/REPO -f delete_branch_on_merge=true
 - **Size Labels**: `size:small` (1-2 days), `size:medium` (3-5 days), `size:large` (1+ weeks)
 - **Workflow Labels**: `ai-assisted`, `ready-for-dev`, `blocked`, `needs-review`
 
-**Project Creation:**
+**Enhanced Project Creation (v2.0):**
 ```bash
-# Creates GitHub Project board
+# Method 1: Advanced GraphQL-based creation with custom fields
+USER_ID=$(gh api user --jq '.node_id')
+PROJECT_DATA=$(gh api graphql -f query='
+mutation($title: String!, $ownerId: ID!) {
+  createProjectV2(input: {ownerId: $ownerId, title: $title}) {
+    projectV2 {
+      id
+      number
+      url
+    }
+  }
+}' -f title="Project Name" -f ownerId="$USER_ID")
+
+# Automatically creates custom fields:
+# - Status (Backlog, Ready, In Progress, Review, Done)
+# - Priority (High, Medium, Low)
+# - Size (Small, Medium, Large)
+
+# Method 2: Fallback to CLI if GraphQL fails
 gh project create --title "Project Name" --owner "@me"
 
-# Saves project number for future sync operations
+# Saves project metadata for future operations
 echo "PROJECT_NUMBER" > .github-project-number
+echo "PROJECT_ID" > .github-project-id
 ```
 
 **Issue Generation:**

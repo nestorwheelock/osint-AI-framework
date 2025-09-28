@@ -368,10 +368,31 @@ gh auth status
 # Should show: ✓ Logged in with 'repo', 'project', 'read:org' scopes
 ```
 
-**Common Issues:**
-- `HTTP 401: Bad credentials` → Run `gh auth login` again
-- `Missing project scope` → Re-authenticate and grant all permissions
-- Token conflicts → Run `unset GH_TOKEN` then `gh auth login`
+**Authentication Troubleshooting:**
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `HTTP 401: Bad credentials` | Invalid/expired token | `unset GH_TOKEN && gh auth login --scopes "repo,read:org,project,gist,workflow"` |
+| `Missing project scope` | Token lacks project permissions | Re-authenticate and grant ALL permissions in browser |
+| `Validation Failed (HTTP 422)` | Label format error | Fixed in latest version - update scripts |
+| `Authentication failed for Git` | HTTPS auth issues | `git remote set-url origin git@github.com:user/repo.git` |
+
+**Complete Authentication Reset:**
+```bash
+# 1. Clear all conflicting tokens
+unset GH_TOKEN
+unset GITHUB_TOKEN
+
+# 2. Re-authenticate with all required scopes
+gh auth login --scopes "repo,read:org,project,gist,workflow"
+
+# 3. Verify authentication
+gh auth status
+# Should show: ✓ Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
+
+# 4. Switch Git to SSH for reliable operations
+git remote set-url origin git@github.com:yourusername/yourrepo.git
+```
 
 #### Option 1: Automated Setup (Recommended)
 
@@ -391,12 +412,14 @@ Use the automation scripts to set up everything automatically:
 ./scripts/setup-github-project.sh --dry-run --verbose
 ```
 
-**This automation sets up**:
-- Repository settings (merge policies, features)
-- Standardized labels (priority, type, size)
-- GitHub Project with recommended fields
-- Issues from all user stories
-- Project milestones
+**Enhanced Automation Features**:
+- ✅ **Repository Configuration**: Merge policies, auto-delete branches
+- ✅ **15 Standardized Labels**: `type-feature`, `priority-high`, `size-medium`, etc.
+- ✅ **GitHub Project Creation**: GraphQL-based with fallback to CLI
+- ✅ **Custom Project Fields**: Status (5 options), Priority (3 options), Size (3 options)
+- ✅ **Issue Generation**: Creates issues from all user story files with proper labeling
+- ✅ **Project Milestones**: MVP, Beta, v1.0, v1.1
+- ✅ **Error Recovery**: Handles authentication issues with detailed troubleshooting
 
 #### Option 2: Manual Setup
 
