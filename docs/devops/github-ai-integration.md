@@ -31,6 +31,73 @@ GitHub Actions    ←→    Automated Workflows
 Claude Code       ←→    AI-Assisted Development
 ```
 
+## Prerequisites & Setup Requirements
+
+### 🔑 GitHub CLI Authentication
+
+**CRITICAL**: Before running any automation scripts, you must authenticate GitHub CLI with proper permissions.
+
+#### Initial Setup (One-time)
+
+```bash
+# Install GitHub CLI (if not already installed)
+# macOS:
+brew install gh
+# Ubuntu/Debian:
+sudo apt install gh
+# Windows: Download from https://cli.github.com/
+
+# Authenticate with full permissions
+gh auth login
+```
+
+**Authentication Flow:**
+1. Choose: **GitHub.com**
+2. Choose: **HTTPS** (recommended)
+3. Choose: **Yes** - Authenticate Git with GitHub credentials
+4. Choose: **Login with a web browser**
+5. Follow browser authentication and **authorize all requested permissions**
+
+#### Required Permissions
+
+The GitHub token needs these scopes for full automation:
+- ✅ **repo** - Full repository access
+- ✅ **read:org** - Read organization membership
+- ✅ **project** - Manage GitHub Projects
+- ✅ **write:discussion** - Create discussions
+- ✅ **gist** - Create gists
+
+#### Verify Authentication
+
+```bash
+# Check authentication status
+gh auth status
+
+# Should show something like:
+# ✓ Logged in to github.com account username (keyring)
+# - Token scopes: 'gist', 'project', 'read:org', 'repo'
+
+# Test repository access
+gh repo view
+```
+
+### ⚠️ Common Authentication Issues
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `HTTP 401: Bad credentials` | Invalid or expired token | Run `gh auth login` to re-authenticate |
+| `Missing project scope` | Token lacks project permissions | Re-run `gh auth login` and grant all permissions |
+| `Repository not found` | Token lacks repo access | Verify repository name and permissions |
+
+### 🛠️ Manual Fallback Options
+
+If automation fails due to authentication issues, you can manually:
+
+1. **Create GitHub Project**: Use GitHub web interface → Your repositories → Projects → New project
+2. **Create Labels**: Repository → Issues → Labels → New label
+3. **Create Issues**: Repository → Issues → New issue
+4. **Configure Settings**: Repository → Settings → General
+
 ## Integration Components
 
 ### 1. Automated Project Setup & Issue Generation
@@ -366,6 +433,66 @@ jobs:
 - **Issue Sync**: Regular audits of file-to-issue consistency
 - **Project Health**: Track completion rates and cycle times
 - **AI Usage**: Monitor Claude API usage and effectiveness
+
+### Detailed Script Operations
+
+#### What setup-github-project.sh Does Step-by-Step
+
+**Repository Configuration:**
+```bash
+# Enables GitHub features
+gh api -X PATCH repos/OWNER/REPO -f has_issues=true
+gh api -X PATCH repos/OWNER/REPO -f has_projects=true
+gh api -X PATCH repos/OWNER/REPO -f has_wiki=false
+
+# Sets merge policies (squash-only workflow)
+gh api -X PATCH repos/OWNER/REPO -f allow_squash_merge=true
+gh api -X PATCH repos/OWNER/REPO -f allow_merge_commit=false
+gh api -X PATCH repos/OWNER/REPO -f allow_rebase_merge=false
+gh api -X PATCH repos/OWNER/REPO -f delete_branch_on_merge=true
+```
+
+**Label Creation (15 standardized labels):**
+- **Type Labels**: `type:feature`, `type:bug`, `type:docs`, `type:refactor`, `type:infrastructure`
+- **Priority Labels**: `priority:high`, `priority:medium`, `priority:low`
+- **Size Labels**: `size:small` (1-2 days), `size:medium` (3-5 days), `size:large` (1+ weeks)
+- **Workflow Labels**: `ai-assisted`, `ready-for-dev`, `blocked`, `needs-review`
+
+**Project Creation:**
+```bash
+# Creates GitHub Project board
+gh project create --title "Project Name" --owner "@me"
+
+# Saves project number for future sync operations
+echo "PROJECT_NUMBER" > .github-project-number
+```
+
+**Issue Generation:**
+- Scans `planning/stories/S-*.md` files
+- Extracts title from first heading or filename
+- Creates GitHub issue with story content
+- Applies appropriate labels (`ai-assisted`, `type:feature`, `ready-for-dev`)
+- Links back to original story file
+
+#### What sync-github-projects.py Does
+
+**File-to-GitHub Sync:**
+1. Reads all user story files in `planning/stories/`
+2. Parses YAML frontmatter for metadata
+3. Creates/updates corresponding GitHub issues
+4. Maintains links between files and issues
+
+**GitHub-to-File Sync:**
+1. Fetches GitHub Project items via GraphQL API
+2. Extracts issue data including custom fields
+3. Updates YAML frontmatter in story files
+4. Creates new story files for GitHub-only issues
+5. Preserves file structure and AI-readable format
+
+**Sync Metadata Storage:**
+- Stores sync history in `.github/project-sync/last_sync.json`
+- Tracks changes for conflict resolution
+- Maintains file-to-issue mapping
 
 ## Security Considerations
 

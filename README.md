@@ -348,6 +348,31 @@ The project includes comprehensive GitHub Actions automation:
 
 ### Setting Up GitHub Integration
 
+#### Prerequisites: GitHub CLI Authentication
+
+**⚠️ REQUIRED BEFORE AUTOMATION**: You must authenticate GitHub CLI with proper permissions.
+
+```bash
+# Install GitHub CLI (if needed)
+# macOS: brew install gh
+# Ubuntu/Debian: sudo apt install gh
+# Windows: Download from https://cli.github.com/
+
+# Authenticate with full permissions
+gh auth login
+# Choose: GitHub.com → HTTPS → Yes → Login with browser
+# Grant ALL requested permissions in browser
+
+# Verify authentication
+gh auth status
+# Should show: ✓ Logged in with 'repo', 'project', 'read:org' scopes
+```
+
+**Common Issues:**
+- `HTTP 401: Bad credentials` → Run `gh auth login` again
+- `Missing project scope` → Re-authenticate and grant all permissions
+- Token conflicts → Run `unset GH_TOKEN` then `gh auth login`
+
 #### Option 1: Automated Setup (Recommended)
 
 Use the automation scripts to set up everything automatically:
