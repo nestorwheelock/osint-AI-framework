@@ -1,0 +1,1 @@
+# Scripts package for GitHub automation and project management

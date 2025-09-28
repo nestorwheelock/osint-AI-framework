@@ -36,25 +36,27 @@ if [ -z "$staged_files" ]; then
     exit 0
 fi
 
-# Check each staged file for attribution
-violations_found=false
-violation_count=0
+# Use the Python attribution checker for consistent detection
+$python_cmd scripts/strip-claude-attribution.py . --dry-run > "$temp_report" 2>&1
 
-for file in $staged_files; do
-    if [ -f "$file" ]; then
-        # Check if this file contains Claude attribution
-        if grep -qi -E "(🤖 Generated with.*Claude|Co-Authored-By:.*Claude|Built with Claude|Generated with Claude|@claude.*author|Created by Claude|Developed with Claude)" "$file" 2>/dev/null; then
-            violations_found=true
-            violation_count=$((violation_count + 1))
-            echo -e "${RED}❌ VIOLATION: $file contains AI attribution${NC}"
+# Check if violations were found
+if grep -q "COMPLIANCE VIOLATION" "$temp_report"; then
+    violations_found=true
+    violation_count=$(grep "Total violations:" "$temp_report" | grep -o '[0-9]\+' | tail -1)
 
-            # Show the specific lines
-            grep -ni -E "(🤖 Generated with.*Claude|Co-Authored-By:.*Claude|Built with Claude|Generated with Claude|@claude.*author|Created by Claude|Developed with Claude)" "$file" | head -3 | while read line; do
-                echo -e "${RED}   $line${NC}"
-            done
+    # Extract and show violations
+    echo -e "${RED}❌ ATTRIBUTION VIOLATIONS DETECTED:${NC}"
+    grep -A 1 "VIOLATIONS in" "$temp_report" | while read line; do
+        if [[ $line == *"VIOLATIONS in"* ]]; then
+            echo -e "${RED}$line${NC}"
+        elif [[ $line == *"Line "* ]]; then
+            echo -e "${RED}   $line${NC}"
         fi
-    fi
-done
+    done
+else
+    violations_found=false
+    violation_count=0
+fi
 
 rm -f "$temp_report"
 

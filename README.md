@@ -348,16 +348,43 @@ The project includes comprehensive GitHub Actions automation:
 
 ### Setting Up GitHub Integration
 
-#### 1. Create GitHub Project Board
+#### Option 1: Automated Setup (Recommended)
+
+Use the automation scripts to set up everything automatically:
+
+```bash
+# Complete GitHub project setup
+./scripts/setup-github-project.sh
+
+# Or with custom options
+./scripts/setup-github-project.sh \
+  --repo owner/repo-name \
+  --project-name "OSINT Framework Development" \
+  --dry-run
+
+# Check what would be done
+./scripts/setup-github-project.sh --dry-run --verbose
+```
+
+**This automation sets up**:
+- Repository settings (merge policies, features)
+- Standardized labels (priority, type, size)
+- GitHub Project with recommended fields
+- Issues from all user stories
+- Project milestones
+
+#### Option 2: Manual Setup
+
+1. **Create GitHub Project Board**
 
 Follow the detailed guide in `docs/devops/github-project-setup.md`:
 
-1. Create new GitHub Project (Table view)
-2. Configure custom fields (Epic, Priority, Sprint, Component)
-3. Set up multiple views (Board, Timeline, Sprint Planning)
-4. Enable built-in automations
+- Create new GitHub Project (Table view)
+- Configure custom fields (Epic, Priority, Sprint, Component)
+- Set up multiple views (Board, Timeline, Sprint Planning)
+- Enable built-in automations
 
-#### 2. Configure Repository Secrets
+2. **Configure Repository Secrets**
 
 Add these secrets in your GitHub repository settings:
 
@@ -366,13 +393,30 @@ ANTHROPIC_API_KEY      # Your Claude API key
 PROJECT_TOKEN          # Personal access token with project permissions
 ```
 
-#### 3. Update Project Configuration
+#### Bidirectional Planning Workflow
 
-In `.github/workflows/sync-tasks-to-issues.yml`, update:
+For hybrid AI + client planning workflows:
 
-```yaml
-project-url: https://github.com/users/YOUR_USERNAME/projects/PROJECT_NUMBER
+```bash
+# 1. AI creates initial stories (already done)
+# 2. Set up GitHub Project
+./scripts/setup-github-project.sh
+
+# 3. Client planning in GitHub Projects GUI
+# (Use web interface for collaboration)
+
+# 4. Sync changes back to files for next AI sprint
+./scripts/sync-github-projects.py owner/repo --sync-to-files
+
+# 5. Check sync status
+./scripts/sync-github-projects.py owner/repo --status
 ```
+
+**Workflow Benefits**:
+- 📁 **Files remain source of truth** for AI development
+- 👥 **GitHub Projects GUI** for client collaboration
+- 🔄 **Bidirectional sync** keeps everything in sync
+- 🤖 **AI-ready updates** for next development sprint
 
 ### Issue Templates
 

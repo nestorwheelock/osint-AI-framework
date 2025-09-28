@@ -33,17 +33,70 @@ Claude Code       ←→    AI-Assisted Development
 
 ## Integration Components
 
-### 1. Automated Issue Generation
+### 1. Automated Project Setup & Issue Generation
 
-**Purpose**: Convert task markdown files into trackable GitHub Issues
-**Workflow**: `.github/workflows/sync-tasks-to-issues.yml`
+**Purpose**: Complete GitHub project automation from initial setup through ongoing sync
+**Scripts**:
+- `scripts/setup-github-project.sh` - Initial project setup
+- `scripts/setup-github-automation.py` - Advanced Python automation
+- `scripts/sync-github-projects.py` - Bidirectional sync
+
+#### GitHub Project Setup Automation
+The `setup-github-project.sh` script automates the complete initial setup:
+
+```bash
+# Auto-setup with current repository
+./scripts/setup-github-project.sh
+
+# Custom setup with options
+./scripts/setup-github-project.sh \
+  --repo owner/repo-name \
+  --project-name "My Custom Project" \
+  --dry-run
+
+# Test what would be done
+./scripts/setup-github-project.sh --dry-run --verbose
+```
+
+**Automated Setup Features**:
+- **Repository Settings**: Configure merge settings, features, and branch protection
+- **Label Management**: Create standardized labels for types, priorities, and sizes
+- **GitHub Project Creation**: Set up project board with recommended fields
+- **Issue Generation**: Convert all user stories to GitHub issues
+- **Milestone Setup**: Create project milestones and roadmap
+
+#### Bidirectional File ↔ GitHub Sync
+
+**Core Workflow**: Files are the source of truth, but GitHub Projects enable client collaboration
+
+```mermaid
+graph LR
+    A[AI Creates Stories] --> B[Story Files]
+    B --> C[GitHub Issues]
+    C --> D[GitHub Projects GUI]
+    D --> E[Client Planning]
+    E --> F[Sync Back to Files]
+    F --> G[AI Next Sprint]
+```
+
+**Sync Commands**:
+```bash
+# Sync changes from GitHub Project back to files
+./scripts/sync-github-projects.py owner/repo --sync-to-files
+
+# Sync file changes to GitHub Project
+./scripts/sync-github-projects.py owner/repo --sync-to-github
+
+# Check sync status
+./scripts/sync-github-projects.py owner/repo --status
+```
 
 #### Features:
-- **Auto-Detection**: Monitors changes to `planning/tasks/T-*.md` files
-- **Smart Labeling**: Automatically applies priority, component, and type labels
-- **Bidirectional Sync**: Keeps issues updated when task files change
-- **Duplicate Prevention**: Checks for existing issues before creating new ones
-- **Force Recreation**: Manual trigger to rebuild all issues
+- **Smart Story Detection**: Automatically links issues to user story files
+- **Metadata Preservation**: Maintains YAML frontmatter with GitHub sync data
+- **Intelligent File Generation**: Creates new story files from GitHub-only issues
+- **Client-Friendly Planning**: Use GitHub Projects GUI with clients, sync changes back
+- **AI-Ready Output**: Updated files ready for next AI development sprint
 
 #### Label Classification:
 ```yaml
