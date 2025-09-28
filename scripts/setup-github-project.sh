@@ -47,7 +47,7 @@ run_command() {
         return 0
     fi
 
-    if eval "$cmd"; then
+    if eval "GH_TOKEN= $cmd"; then
         log_success "$description"
         return 0
     else
