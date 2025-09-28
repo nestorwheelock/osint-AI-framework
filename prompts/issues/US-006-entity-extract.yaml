@@ -1,0 +1,15 @@
+role: "Senior ML plumbing engineer; strict provenance."
+objective: "Run entity-extract on extracted_text, store entities with spans and confidence."
+tests_to_make_pass:
+  - backend/app/tests/test_pipeline_entity.py::test_entity_extract_persists_entities_with_provenance
+  - backend/app/tests/test_analysis_run.py::test_run_records_prompt_version_and_model
+constraints:
+  allowed_paths:
+    - backend/app/services/pipelines/entity_extract.py
+    - backend/app/models/analysis.py
+    - backend/app/routes/analyze.py
+guardrails:
+  - "Mock LLM in tests; no network"
+definition_of_done:
+  - "POST /analyze creates AnalysisRun(status=running) → success with entities[]"
+  - "Entities carry source_analysis_run_id and web_page_id"
