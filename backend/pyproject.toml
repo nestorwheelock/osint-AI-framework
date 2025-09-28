@@ -1,0 +1,18 @@
+[project]
+name = "web-research-backend"
+version = "0.1.0"
+description = "Backend for Web Research Platform"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "pydantic>=2",
+  "python-dotenv",
+]
+[project.optional-dependencies]
+dev = ["pytest", "httpx", "pytest-asyncio", "anyio", "coverage", "mypy"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+python_files = "test_*.py"
+addopts = "-q"

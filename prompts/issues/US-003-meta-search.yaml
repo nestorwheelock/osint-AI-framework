@@ -1,0 +1,17 @@
+role: "Senior backend dev, TDD only."
+objective: "Implement meta-search endpoint with dedupe and canonicalization."
+tests_to_make_pass:
+  - backend/app/tests/test_url_utils.py::test_canonicalize_url_variants
+  - backend/app/tests/test_search.py::test_meta_search_collapses_duplicates
+  - frontend/e2e/tests/search.spec.ts::runs_search_and_shows_engine_badges
+constraints:
+  allowed_paths:
+    - backend/app/routes/search.py
+    - backend/app/services/search/*
+    - backend/app/utils/url.py
+    - frontend/src/pages/SearchResults.tsx
+style_guide:
+  - "No live HTTP in unit tests; adapters accept fixture payloads"
+definition_of_done:
+  - "GET /subjects/{id}/search returns merged, deduped results"
+  - "Playwright test sees engine badges and deduped rows"
