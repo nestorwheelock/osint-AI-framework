@@ -47,7 +47,7 @@ run_command() {
         return 0
     fi
 
-    if eval "GH_TOKEN= $cmd"; then
+    if (unset GH_TOKEN && eval "$cmd"); then
         log_success "$description"
         return 0
     else
@@ -113,7 +113,7 @@ create_labels() {
     # Define labels as "name:color:description"
     labels=(
         "type-feature:0052cc:New feature or enhancement"
-        "type-bug:d73a4a:Something isn't working"
+        "type-bug:d73a4a:Something is not working"
         "type-docs:0075ca:Documentation improvement"
         "type-refactor:fbca04:Code refactoring"
         "type-infrastructure:1d76db:Infrastructure and DevOps"
@@ -133,7 +133,7 @@ create_labels() {
         IFS=':' read -r name color description <<< "$label"
 
         # Check if label already exists
-        if gh api "repos/$REPO_NAME/labels/$name" &> /dev/null; then
+        if (unset GH_TOKEN && gh api "repos/$REPO_NAME/labels/$name" &> /dev/null); then
             log_warning "Label '$name' already exists, skipping"
         else
             run_command "gh api -X POST repos/$REPO_NAME/labels -f name='$name' -f color='$color' -f description='$description'" "Create label: $name"
