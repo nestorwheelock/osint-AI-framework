@@ -112,17 +112,17 @@ create_labels() {
 
     # Define labels as "name:color:description"
     labels=(
-        "type:feature:0052cc:New feature or enhancement"
-        "type:bug:d73a4a:Something isn't working"
-        "type:docs:0075ca:Documentation improvement"
-        "type:refactor:fbca04:Code refactoring"
-        "type:infrastructure:1d76db:Infrastructure and DevOps"
-        "priority:high:b60205:High priority"
-        "priority:medium:fbca04:Medium priority"
-        "priority:low:0e8a16:Low priority"
-        "size:small:c2e0c6:1-2 days of work"
-        "size:medium:fef2c0:3-5 days of work"
-        "size:large:f9d0c4:1+ weeks of work"
+        "type-feature:0052cc:New feature or enhancement"
+        "type-bug:d73a4a:Something isn't working"
+        "type-docs:0075ca:Documentation improvement"
+        "type-refactor:fbca04:Code refactoring"
+        "type-infrastructure:1d76db:Infrastructure and DevOps"
+        "priority-high:b60205:High priority"
+        "priority-medium:fbca04:Medium priority"
+        "priority-low:0e8a16:Low priority"
+        "size-small:c2e0c6:1-2 days of work"
+        "size-medium:fef2c0:3-5 days of work"
+        "size-large:f9d0c4:1+ weeks of work"
         "ai-assisted:7057ff:Work done with AI assistance"
         "ready-for-dev:0e8a16:Ready for development"
         "blocked:d93f0b:Blocked by dependency"
@@ -202,7 +202,7 @@ Please see the user story file for complete requirements, acceptance criteria, a
 This issue was automatically created from the user story planning documentation."
 
             # Determine labels based on story type
-            local labels="ai-assisted,type:feature,ready-for-dev"
+            local labels="ai-assisted,type-feature,ready-for-dev"
 
             # Create the issue
             if [ "$DRY_RUN" = false ]; then
