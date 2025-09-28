@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.049075'
+status: todo
+```
+
 # T-006 — Tasks for S-006: AI Entity Extraction
 
 ## Prerequisites

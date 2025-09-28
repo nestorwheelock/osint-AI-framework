@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.047419'
+status: todo
+```
+
 # T-001 — Tasks for S-001: Create Subject
 
 ## Prerequisites

@@ -1,0 +1,9 @@
+-   id: sync-github-status
+    name: Sync GitHub Project Status to Files
+    description: Ensures planning files are synced with GitHub Project status before commit
+    entry: python scripts/sync-status-to-files.py
+    language: system
+    args: ['nestorwheelock/osint-framework', '--project-number', '5']
+    files: '^planning/.*\.md$'
+    require_serial: true
+    verbose: true

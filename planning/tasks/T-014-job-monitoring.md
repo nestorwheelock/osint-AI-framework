@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.051684'
+status: todo
+```
+
 # T-014 — Tasks for S-014: Job Monitoring
 
 ## Prerequisites

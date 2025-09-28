@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.050670'
+status: todo
+```
+
 # T-011 — Tasks for S-011: Timeline Assembly
 
 ## Prerequisites

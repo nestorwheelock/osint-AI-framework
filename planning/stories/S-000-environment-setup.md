@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.043072'
+status: todo
+```
+
 # S-000: Pre-Epoch Environment Design & Infrastructure Setup
 
 **Epic**: OSINT Research Platform

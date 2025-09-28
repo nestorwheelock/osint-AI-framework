@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.047046'
+status: todo
+```
+
 # S-006 — AI Entity Extraction
 
 **As a** OSINT researcher

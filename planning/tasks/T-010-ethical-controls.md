@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.050358'
+status: todo
+```
+
 # T-010 — Tasks for S-010: Ethical Scraping Controls
 
 ## Prerequisites

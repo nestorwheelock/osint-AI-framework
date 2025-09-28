@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.048740'
+status: todo
+```
+
 # T-005 — Tasks for S-005: Text Extraction & Language Detection
 
 ## Prerequisites

@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.046650'
+status: todo
+```
+
 # S-005 — Text Extraction & Language Detection
 
 **As a** OSINT researcher

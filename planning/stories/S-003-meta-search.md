@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.045764'
+status: todo
+```
+
 # S-003 — Meta-Search Implementation
 
 **As a** OSINT researcher

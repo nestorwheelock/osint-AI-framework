@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.047760'
+status: todo
+```
+
 # T-002 — Tasks for S-002: Start Investigation Session
 
 ## Prerequisites

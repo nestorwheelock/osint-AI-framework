@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.050044'
+status: todo
+```
+
 # T-009 — Tasks for S-009: Configuration Management
 
 ## Prerequisites

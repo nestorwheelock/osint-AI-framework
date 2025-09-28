@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.049698'
+status: todo
+```
+
 # T-008 — Tasks for S-008: Export Functionality
 
 ## Prerequisites

@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend:/app
+      - backend_cache:/app/.cache
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+    depends_on:
+      - database
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+
+  database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: osint_platform
+      POSTGRES_USER: osint_user
+      POSTGRES_PASSWORD: dev_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_dev_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+  backend_cache:

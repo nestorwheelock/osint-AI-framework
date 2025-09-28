@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.049392'
+status: todo
+```
+
 # T-007 — Tasks for S-007: Labeling & Filtering System
 
 ## Prerequisites

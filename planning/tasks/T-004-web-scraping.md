@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.048414'
+status: todo
+```
+
 # T-004 — Tasks for S-004: Playwright Web Scraping
 
 ## Prerequisites

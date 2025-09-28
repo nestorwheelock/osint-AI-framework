@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.051354'
+status: todo
+```
+
 # T-013 — Tasks for S-013: PDF Report Generation
 
 ## Prerequisites

@@ -1,8 +1,15 @@
+```yaml
+last_synced: '2025-09-28T16:22:25.044666'
+status: todo
+```
+
 # S-001 — Create Subject
 
 **As a** OSINT researcher
 **I want** to create and manage investigation subjects
 **So that** I can organize my research around specific targets or topics
+
+<!-- Test comment for pre-commit hook verification -->
 
 ## Acceptance Criteria
 - [ ] When I access the subjects API, I can create a new subject with name and optional description
