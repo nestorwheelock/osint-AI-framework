@@ -66,7 +66,8 @@ constraints:
     - backend/app/routes/duplicates.py
     - backend/app/tests/test_deduplication.py
   dependencies: "scikit-learn for similarity, difflib for text comparison"
-  testing: "Test with various content types and similarity thresholds"  security:
+  testing: "Test with various content types and similarity thresholds"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T16:22:25.044666'
+last_synced: '2025-09-28T17:42:31.115088'
 status: todo
 ```
 
@@ -73,7 +73,8 @@ constraints:
     - backend/apps/subjects/urls.py
     - backend/apps/subjects/tests.py
   database: "Use Django ORM with PostgreSQL"
-  testing: "Write Django tests first, then implement minimal code to pass"  security:
+  testing: "Write Django tests first, then implement minimal code to pass"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

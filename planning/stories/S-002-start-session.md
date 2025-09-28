@@ -61,7 +61,8 @@ constraints:
     - backend/app/schemas/session.py
     - backend/app/tests/test_sessions.py
   database: "Use SQLAlchemy with proper foreign key constraints"
-  testing: "Write tests first, implement minimal working code"  security:
+  testing: "Write tests first, implement minimal working code"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

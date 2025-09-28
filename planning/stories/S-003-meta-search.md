@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T16:22:25.045764'
+last_synced: '2025-09-28T17:42:31.115499'
 status: todo
 ```
 
@@ -73,7 +73,8 @@ constraints:
     - backend/app/utils/url.py
     - backend/app/tests/test_search.py
     - backend/app/tests/test_url_utils.py
-  testing: "No live HTTP in unit tests; adapters accept fixture payloads"  security:
+  testing: "No live HTTP in unit tests; adapters accept fixture payloads"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

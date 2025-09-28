@@ -66,7 +66,8 @@ constraints:
     - backend/app/services/scraper/robots_parser.py
     - backend/app/tests/test_ethical_scraping.py
   dependencies: "urllib.robotparser, asyncio for rate limiting"
-  testing: "Test against real robots.txt files and rate limits"  security:
+  testing: "Test against real robots.txt files and rate limits"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

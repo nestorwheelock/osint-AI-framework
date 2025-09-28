@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T16:22:25.047046'
+last_synced: '2025-09-28T17:42:31.116269'
 status: todo
 ```
 
@@ -73,7 +73,8 @@ constraints:
     - backend/app/models/analysis_run.py
     - backend/app/tests/test_ai_analyzer.py
   dependencies: "OpenAI API, transformers, spaCy for local models"
-  testing: "Mock AI APIs for unit tests, real models for integration"  security:
+  testing: "Mock AI APIs for unit tests, real models for integration"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

@@ -67,7 +67,8 @@ constraints:
     - backend/app/routes/export.py
     - backend/app/tests/test_exporter.py
   dependencies: "Streaming responses, background jobs, file handling"
-  testing: "Test large dataset handling and format validation"  security:
+  testing: "Test large dataset handling and format validation"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

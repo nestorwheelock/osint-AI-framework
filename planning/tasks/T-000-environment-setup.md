@@ -1,3 +1,8 @@
+```yaml
+last_synced: '2025-09-28T17:42:31.126849'
+status: todo
+```
+
 # T-000: Pre-Epoch Environment Design & Infrastructure Setup
 
 **Story**: S-000 - Pre-Epoch Environment Design & Infrastructure Setup

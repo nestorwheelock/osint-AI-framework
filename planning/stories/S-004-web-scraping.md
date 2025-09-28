@@ -67,7 +67,8 @@ constraints:
     - backend/app/models/webpage.py
     - backend/app/tests/test_scraper.py
   dependencies: "Playwright for Python, async/await patterns"
-  testing: "Mock Playwright for unit tests, real browser for integration"  security:
+  testing: "Mock Playwright for unit tests, real browser for integration"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

@@ -67,7 +67,8 @@ constraints:
     - backend/app/services/labeling/
     - backend/app/tests/test_labeling.py
   dependencies: "SQLAlchemy relationships, query optimization"
-  testing: "Test complex filtering queries and UI interactions"  security:
+  testing: "Test complex filtering queries and UI interactions"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"

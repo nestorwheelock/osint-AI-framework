@@ -6,6 +6,7 @@ Creates issues from markdown files and adds them to the GitHub Project.
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -26,21 +27,22 @@ class PlanningImporter:
     def _run_gh_command(self, cmd_args: List[str]) -> Optional[str]:
         """Run GitHub CLI command with authentication handling."""
         if self.dry_run:
-            print(f"[DRY RUN] Would run: gh {' '.join(cmd_args)}")
+            print(
+                f"[DRY RUN] Would run: gh {' '.join(cmd_args[:4])}... (content truncated)"
+            )
             return None
 
         try:
-            # Use unset GH_TOKEN to avoid environment conflicts
+            # Use subprocess.run with environment variable handling
+            env = os.environ.copy()
+            env.pop("GH_TOKEN", None)  # Remove GH_TOKEN from environment
             result = subprocess.run(
-                ["bash", "-c", f'unset GH_TOKEN && gh {" ".join(cmd_args)}'],
-                capture_output=True,
-                text=True,
-                check=True,
+                ["gh"] + cmd_args, capture_output=True, text=True, check=True, env=env
             )
             return result.stdout.strip()
         except subprocess.CalledProcessError as e:
             print(f"❌ GitHub CLI command failed: {e}")
-            print(f"   Command: gh {' '.join(cmd_args)}")
+            print(f"   Command: gh {' '.join(cmd_args[:4])}...")
             print(f"   Error: {e.stderr}")
             return None
 
@@ -148,11 +150,11 @@ class PlanningImporter:
             "--repo",
             self.repo_name,
             "--title",
-            f'"{title}"',
+            title,
             "--body",
-            f'"{body}"',
+            body,
             "--label",
-            f'"{labels_str}"',
+            labels_str,
         ]
 
         result = self._run_gh_command(cmd)

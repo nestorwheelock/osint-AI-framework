@@ -66,7 +66,8 @@ constraints:
     - backend/app/routes/reports.py
     - backend/app/tests/test_reports.py
   dependencies: "ReportLab or WeasyPrint for PDF, Jinja2 for templates"
-  testing: "Test PDF generation and verify document structure"  security:
+  testing: "Test PDF generation and verify document structure"
+  security:
     - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
     - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
     - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
