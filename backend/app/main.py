@@ -1,12 +1,21 @@
-from fastapi import FastAPI
-from .routes import subjects, search, analyze
+from django.http import JsonResponse
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls import url
+from django.contrib import admin
 
-app = FastAPI(title="Web Research Platform API")
+# Django WSGI application
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
 
-app.include_router(subjects.router, prefix="/subjects", tags=["subjects"])
-app.include_router(search.router, tags=["search"])
-app.include_router(analyze.router, tags=["analyze"])
+def healthz(request):
+    """Health check endpoint"""
+    return JsonResponse({"ok": True})
 
-@app.get("/healthz")
-def healthz():
-    return {"ok": True}
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/subjects/', include('apps.subjects.urls')),
+    path('api/search/', include('apps.search.urls')),
+    path('api/analyze/', include('apps.analyze.urls')),
+    path('healthz/', healthz, name='healthz'),
+]

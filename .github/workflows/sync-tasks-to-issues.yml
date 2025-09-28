@@ -1,0 +1,173 @@
+name: Sync Tasks to GitHub Issues
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'planning/tasks/T-*.md'
+      - 'planning/stories/S-*.md'
+  workflow_dispatch:
+    inputs:
+      force_recreate:
+        description: 'Force recreate all issues'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  sync-tasks:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      projects: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install @octokit/rest js-yaml gray-matter
+
+      - name: Sync Tasks to Issues
+        uses: actions/github-script@v7
+        env:
+          FORCE_RECREATE: ${{ github.event.inputs.force_recreate || 'false' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const matter = require('gray-matter');
+
+            // Helper function to parse markdown files
+            function parseTaskFile(filePath) {
+              const content = fs.readFileSync(filePath, 'utf8');
+              const parsed = matter(content);
+
+              // Extract title from first heading
+              const titleMatch = content.match(/^# (.+)/m);
+              const title = titleMatch ? titleMatch[1] : path.basename(filePath, '.md');
+
+              // Extract story reference
+              const storyMatch = content.match(/\*\*Story\*\*: (.+)/);
+              const story = storyMatch ? storyMatch[1] : 'Unknown';
+
+              // Extract estimated hours
+              const hoursMatch = content.match(/\*\*Estimated Hours\*\*: (.+)/);
+              const estimatedHours = hoursMatch ? hoursMatch[1] : 'Not specified';
+
+              return {
+                title: title,
+                content: content,
+                story: story,
+                estimatedHours: estimatedHours,
+                frontmatter: parsed.data
+              };
+            }
+
+            // Get all task files
+            const tasksDir = 'planning/tasks';
+            const taskFiles = fs.readdirSync(tasksDir)
+              .filter(file => file.match(/^T-\d{3}-.+\.md$/))
+              .sort();
+
+            console.log(`Found ${taskFiles.length} task files to process`);
+
+            // Get existing issues with task labels
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'task',
+              state: 'all',
+              per_page: 100
+            });
+
+            const forceRecreate = process.env.FORCE_RECREATE === 'true';
+
+            for (const file of taskFiles) {
+              const filePath = path.join(tasksDir, file);
+              const task = parseTaskFile(filePath);
+
+              // Create issue title with task prefix
+              const issueTitle = `[${file.replace('.md', '')}] ${task.title}`;
+
+              // Check if issue already exists
+              const existingIssue = existingIssues.data.find(issue =>
+                issue.title.includes(file.replace('.md', ''))
+              );
+
+              if (existingIssue && !forceRecreate) {
+                console.log(`Issue already exists for ${file}: #${existingIssue.number}`);
+                continue;
+              }
+
+              // Prepare issue body
+              const issueBody = `
+            <!-- Auto-generated from ${filePath} -->
+
+            ${task.content}
+
+            ---
+
+            **Task File**: [\`${file}\`](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/${filePath})
+            **Story Reference**: ${task.story}
+            **Estimated Hours**: ${task.estimatedHours}
+
+            > This issue was automatically generated from the task breakdown file.
+            > Updates to the task file will sync to this issue.
+              `.trim();
+
+              // Determine labels based on task type and content
+              const labels = ['task'];
+
+              // Add priority labels based on story
+              if (task.story.includes('S-000')) labels.push('priority-highest', 'infrastructure');
+              else if (task.story.includes('S-015')) labels.push('priority-high', 'integration');
+              else if (['S-001', 'S-002', 'S-003'].some(s => task.story.includes(s))) labels.push('priority-high', 'foundation');
+              else if (['S-004', 'S-005', 'S-006'].some(s => task.story.includes(s))) labels.push('priority-high', 'data-processing');
+              else if (['S-007', 'S-008', 'S-009', 'S-010'].some(s => task.story.includes(s))) labels.push('priority-high', 'core-features');
+              else labels.push('priority-medium', 'enhancement');
+
+              // Add component labels
+              if (task.content.includes('backend') || task.content.includes('FastAPI')) labels.push('backend');
+              if (task.content.includes('frontend') || task.content.includes('React')) labels.push('frontend');
+              if (task.content.includes('database') || task.content.includes('PostgreSQL')) labels.push('database');
+              if (task.content.includes('Docker') || task.content.includes('CI/CD')) labels.push('devops');
+
+              try {
+                if (existingIssue && forceRecreate) {
+                  // Update existing issue
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: existingIssue.number,
+                    title: issueTitle,
+                    body: issueBody,
+                    labels: labels
+                  });
+                  console.log(`Updated issue #${existingIssue.number} for ${file}`);
+                } else {
+                  // Create new issue
+                  const issue = await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: issueTitle,
+                    body: issueBody,
+                    labels: labels,
+                    assignees: [] // Can be configured per task
+                  });
+                  console.log(`Created issue #${issue.data.number} for ${file}`);
+                }
+              } catch (error) {
+                console.error(`Failed to process ${file}:`, error.message);
+              }
+            }
+
+            console.log('Task synchronization completed');

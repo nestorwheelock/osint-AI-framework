@@ -1,0 +1,189 @@
+name: Claude Code Integration
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude-assistance:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request' && github.event.action != 'synchronize') ||
+      github.event_name == 'pull_request_review'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Claude Code Action
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: claude-3-5-sonnet-20241022
+          max-tokens: 4000
+          temperature: 0.1
+
+      - name: Context Enhancement
+        if: contains(github.event.comment.body, '@claude') || github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Load project context for Claude
+            let context = '';
+
+            // Add CLAUDE.md content
+            if (fs.existsSync('CLAUDE.md')) {
+              context += fs.readFileSync('CLAUDE.md', 'utf8') + '\n\n';
+            }
+
+            // If this relates to a task, include task file content
+            const issueTitle = context.issue?.title || context.payload?.pull_request?.title || '';
+            const taskMatch = issueTitle.match(/\[T-(\d{3})[^\]]*\]/);
+
+            if (taskMatch) {
+              const taskId = taskMatch[1];
+              const taskFiles = [
+                `planning/tasks/T-${taskId}-*.md`,
+                `planning/stories/S-${taskId}-*.md`
+              ];
+
+              for (const pattern of taskFiles) {
+                try {
+                  const files = require('glob').sync(pattern);
+                  for (const file of files) {
+                    if (fs.existsSync(file)) {
+                      context += `\n## ${file}\n`;
+                      context += fs.readFileSync(file, 'utf8') + '\n';
+                    }
+                  }
+                } catch (error) {
+                  console.log(`Could not load files matching ${pattern}`);
+                }
+              }
+            }
+
+            // Add relevant documentation
+            const docFiles = [
+              'docs/design/osint-platform.md',
+              'docs/infrastructure/environment-architecture.md',
+              'planning/backlog.md'
+            ];
+
+            for (const docFile of docFiles) {
+              if (fs.existsSync(docFile)) {
+                context += `\n## ${docFile}\n`;
+                context += fs.readFileSync(docFile, 'utf8').substring(0, 2000) + '\n';
+              }
+            }
+
+            // Store context for Claude to access
+            core.setOutput('project-context', context);
+
+  auto-assign-to-project:
+    if: github.event_name == 'issues' && github.event.action == 'opened' && contains(github.event.issue.labels.*.name, 'task')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add to Project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/users/${{ github.repository_owner }}/projects/1
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+
+  update-issue-from-task:
+    if: |
+      github.event_name == 'push' &&
+      contains(github.event.head_commit.modified, 'planning/tasks/') ||
+      contains(github.event.head_commit.modified, 'planning/stories/')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update Related Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Get modified files from the push
+            const modifiedFiles = [
+              ...(context.payload.head_commit.added || []),
+              ...(context.payload.head_commit.modified || [])
+            ].filter(file =>
+              file.startsWith('planning/tasks/') ||
+              file.startsWith('planning/stories/')
+            );
+
+            console.log('Modified planning files:', modifiedFiles);
+
+            // For each modified task file, find and update related issue
+            for (const file of modifiedFiles) {
+              if (!file.startsWith('planning/tasks/T-')) continue;
+
+              const taskId = path.basename(file, '.md');
+
+              // Find existing issue with this task ID
+              const issues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'task',
+                state: 'all'
+              });
+
+              const relatedIssue = issues.data.find(issue =>
+                issue.title.includes(taskId)
+              );
+
+              if (relatedIssue && fs.existsSync(file)) {
+                const taskContent = fs.readFileSync(file, 'utf8');
+
+                // Update issue body with new content
+                const updatedBody = `
+            <!-- Auto-generated from ${file} -->
+
+            ${taskContent}
+
+            ---
+
+            **Task File**: [\`${path.basename(file)}\`](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/${file})
+            **Last Updated**: ${new Date().toISOString()}
+
+            > This issue was automatically updated from the task breakdown file.
+                `.trim();
+
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: relatedIssue.number,
+                  body: updatedBody
+                });
+
+                console.log(`Updated issue #${relatedIssue.number} for ${file}`);
+              }
+            }

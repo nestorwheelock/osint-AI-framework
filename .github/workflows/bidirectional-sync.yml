@@ -1,0 +1,414 @@
+name: Bidirectional Planning Sync
+
+on:
+  # Sync from files to issues
+  push:
+    branches: [main]
+    paths:
+      - 'planning/tasks/T-*.md'
+      - 'planning/stories/S-*.md'
+      - 'planning/backlog.md'
+
+  # Sync from issues to files (manual trigger for now)
+  workflow_dispatch:
+    inputs:
+      sync_direction:
+        description: 'Sync direction'
+        required: true
+        default: 'files_to_issues'
+        type: choice
+        options:
+          - files_to_issues
+          - issues_to_files
+          - full_sync
+
+  # Sync when issues are updated
+  issues:
+    types: [edited]
+
+jobs:
+  sync-files-to-issues:
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' &&
+       (github.event.inputs.sync_direction == 'files_to_issues' ||
+        github.event.inputs.sync_direction == 'full_sync'))
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install @octokit/rest js-yaml gray-matter glob
+
+      - name: Sync Task Files to Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const matter = require('gray-matter');
+            const glob = require('glob');
+
+            // Helper function to parse task files
+            function parseTaskFile(filePath) {
+              const content = fs.readFileSync(filePath, 'utf8');
+              const parsed = matter(content);
+
+              // Extract metadata
+              const titleMatch = content.match(/^# (.+)/m);
+              const title = titleMatch ? titleMatch[1] : path.basename(filePath, '.md');
+
+              const storyMatch = content.match(/\*\*Story\*\*: (.+)/);
+              const story = storyMatch ? storyMatch[1] : 'Unknown';
+
+              const hoursMatch = content.match(/\*\*Estimated Hours\*\*: (.+)/);
+              const estimatedHours = hoursMatch ? hoursMatch[1] : 'Not specified';
+
+              const priorityMatch = content.match(/\*\*Priority\*\*: (.+)/);
+              const priority = priorityMatch ? priorityMatch[1] : 'Medium';
+
+              // Extract components from content
+              const components = [];
+              if (content.includes('backend') || content.includes('FastAPI')) components.push('backend');
+              if (content.includes('frontend') || content.includes('React')) components.push('frontend');
+              if (content.includes('database') || content.includes('PostgreSQL')) components.push('database');
+              if (content.includes('Docker') || content.includes('CI/CD')) components.push('devops');
+              if (content.includes('infrastructure') || content.includes('Infrastructure')) components.push('infrastructure');
+
+              return {
+                title: title,
+                content: content,
+                story: story,
+                estimatedHours: estimatedHours,
+                priority: priority,
+                components: components,
+                frontmatter: parsed.data,
+                lastModified: fs.statSync(filePath).mtime
+              };
+            }
+
+            // Get all task files
+            const taskFiles = glob.sync('planning/tasks/T-*.md').sort();
+            console.log(`Found ${taskFiles.length} task files to sync`);
+
+            // Get existing issues
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'task',
+              state: 'all',
+              per_page: 100
+            });
+
+            const issueMap = new Map();
+            existingIssues.data.forEach(issue => {
+              const taskMatch = issue.title.match(/\[T-(\d{3})[^\]]*\]/);
+              if (taskMatch) {
+                issueMap.set(`T-${taskMatch[1]}`, issue);
+              }
+            });
+
+            // Process each task file
+            for (const filePath of taskFiles) {
+              const task = parseTaskFile(filePath);
+              const taskId = path.basename(filePath, '.md');
+              const existingIssue = issueMap.get(taskId);
+
+              // Create issue title
+              const issueTitle = `[${taskId}] ${task.title}`;
+
+              // Determine labels
+              const labels = ['task'];
+
+              // Priority labels
+              const priorityLower = task.priority.toLowerCase();
+              if (priorityLower.includes('highest')) labels.push('priority-highest');
+              else if (priorityLower.includes('high')) labels.push('priority-high');
+              else if (priorityLower.includes('medium')) labels.push('priority-medium');
+              else if (priorityLower.includes('low')) labels.push('priority-low');
+
+              // Component labels
+              task.components.forEach(comp => labels.push(comp));
+
+              // Create issue body with metadata
+              const issueBody = `
+            <!-- Auto-generated from ${filePath} -->
+            <!-- Last synced: ${new Date().toISOString()} -->
+            <!-- File modified: ${task.lastModified.toISOString()} -->
+
+            ${task.content}
+
+            ---
+
+            ## Sync Information
+            - **Task File**: [\`${path.basename(filePath)}\`](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/${filePath})
+            - **Story Reference**: ${task.story}
+            - **Estimated Hours**: ${task.estimatedHours}
+            - **Priority**: ${task.priority}
+            - **Components**: ${task.components.join(', ') || 'None'}
+            - **Last File Update**: ${task.lastModified.toISOString()}
+
+            > 🤖 This issue is automatically synchronized with the task breakdown file.
+            > Changes to the task file will update this issue.
+            > Manual edits to this issue may be overwritten during sync.
+              `.trim();
+
+              try {
+                if (existingIssue) {
+                  // Check if file is newer than last sync
+                  const lastSyncMatch = existingIssue.body?.match(/<!-- File modified: (.+) -->/);
+                  const lastSyncDate = lastSyncMatch ? new Date(lastSyncMatch[1]) : new Date(0);
+
+                  if (task.lastModified > lastSyncDate) {
+                    // Update existing issue
+                    await github.rest.issues.update({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: existingIssue.number,
+                      title: issueTitle,
+                      body: issueBody,
+                      labels: labels
+                    });
+                    console.log(`Updated issue #${existingIssue.number} for ${taskId}`);
+                  } else {
+                    console.log(`Skipping ${taskId} - issue is up to date`);
+                  }
+                } else {
+                  // Create new issue
+                  const newIssue = await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: issueTitle,
+                    body: issueBody,
+                    labels: labels
+                  });
+                  console.log(`Created issue #${newIssue.data.number} for ${taskId}`);
+                }
+              } catch (error) {
+                console.error(`Failed to sync ${taskId}:`, error.message);
+              }
+            }
+
+  sync-issues-to-files:
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.sync_direction == 'issues_to_files' ||
+       github.event.inputs.sync_direction == 'full_sync')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install @octokit/rest js-yaml gray-matter
+
+      - name: Sync Issues to Task Files
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Get all task issues
+            const taskIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'task',
+              state: 'all',
+              per_page: 100
+            });
+
+            let syncedFiles = [];
+
+            for (const issue of taskIssues.data) {
+              // Extract task ID from issue title
+              const taskMatch = issue.title.match(/\[T-(\d{3})[^\]]*\]/);
+              if (!taskMatch) continue;
+
+              const taskId = taskMatch[1];
+              const taskFileName = `T-${taskId}`;
+
+              // Find existing task file
+              const possibleFiles = fs.readdirSync('planning/tasks/')
+                .filter(file => file.startsWith(taskFileName) && file.endsWith('.md'));
+
+              if (possibleFiles.length === 0) {
+                console.log(`No task file found for ${taskId}, skipping reverse sync`);
+                continue;
+              }
+
+              const taskFilePath = path.join('planning/tasks', possibleFiles[0]);
+
+              // Check if issue was updated after file
+              const fileStats = fs.statSync(taskFilePath);
+              const issueUpdated = new Date(issue.updated_at);
+
+              if (issueUpdated <= fileStats.mtime) {
+                console.log(`File ${taskFilePath} is newer than issue, skipping`);
+                continue;
+              }
+
+              // Extract status from issue
+              const status = issue.state === 'closed' ? 'completed' :
+                           issue.labels.some(l => l.name === 'in-progress') ? 'in-progress' :
+                           'todo';
+
+              // Update frontmatter in task file to reflect issue status
+              const content = fs.readFileSync(taskFilePath, 'utf8');
+              const lines = content.split('\n');
+
+              // Add sync metadata as comments
+              const syncComment = `<!-- Synced from GitHub Issue #${issue.number} at ${new Date().toISOString()} -->`;
+              const statusComment = `<!-- Issue Status: ${status} -->`;
+
+              if (!content.includes('<!-- Synced from GitHub Issue')) {
+                lines.splice(1, 0, syncComment, statusComment, '');
+              }
+
+              fs.writeFileSync(taskFilePath, lines.join('\n'));
+              syncedFiles.push(taskFilePath);
+
+              console.log(`Updated ${taskFilePath} from issue #${issue.number}`);
+            }
+
+            // Commit changes if any files were updated
+            if (syncedFiles.length > 0) {
+              const { execSync } = require('child_process');
+
+              try {
+                execSync('git config user.name "GitHub Actions"');
+                execSync('git config user.email "actions@github.com"');
+
+                for (const file of syncedFiles) {
+                  execSync(`git add "${file}"`);
+                }
+
+                execSync(`git commit -m "Sync task files from GitHub Issues
+
+            Updated ${syncedFiles.length} task file(s) with latest issue status:
+            ${syncedFiles.map(f => `- ${f}`).join('\n')}
+
+            🤖 Automated sync from GitHub Actions"`);
+
+                execSync('git push');
+
+                console.log(`Committed and pushed ${syncedFiles.length} updated files`);
+              } catch (error) {
+                console.error('Failed to commit changes:', error.message);
+              }
+            }
+
+  validate-sync-integrity:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate File-Issue Consistency
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const glob = require('glob');
+
+            // Get all task files
+            const taskFiles = glob.sync('planning/tasks/T-*.md');
+            const taskIds = taskFiles.map(f => {
+              const match = f.match(/T-(\d{3})/);
+              return match ? `T-${match[1]}` : null;
+            }).filter(Boolean);
+
+            // Get all task issues
+            const taskIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'task',
+              state: 'all',
+              per_page: 100
+            });
+
+            const issueTaskIds = taskIssues.data.map(issue => {
+              const match = issue.title.match(/\[T-(\d{3})[^\]]*\]/);
+              return match ? `T-${match[1]}` : null;
+            }).filter(Boolean);
+
+            // Find discrepancies
+            const missingIssues = taskIds.filter(id => !issueTaskIds.includes(id));
+            const orphanedIssues = issueTaskIds.filter(id => !taskIds.includes(id));
+
+            let summary = '## Sync Integrity Report\n\n';
+            summary += `- **Task Files**: ${taskIds.length}\n`;
+            summary += `- **Task Issues**: ${issueTaskIds.length}\n\n`;
+
+            if (missingIssues.length > 0) {
+              summary += '### Missing Issues\n';
+              summary += missingIssues.map(id => `- ${id}`).join('\n') + '\n\n';
+            }
+
+            if (orphanedIssues.length > 0) {
+              summary += '### Orphaned Issues\n';
+              summary += orphanedIssues.map(id => `- ${id}`).join('\n') + '\n\n';
+            }
+
+            if (missingIssues.length === 0 && orphanedIssues.length === 0) {
+              summary += '✅ All task files have corresponding issues and vice versa.\n';
+            }
+
+            console.log(summary);
+
+            // Create or update sync report issue
+            const syncReportTitle = 'Sync Integrity Report';
+            const existingReports = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              creator: 'github-actions[bot]',
+              state: 'open'
+            });
+
+            const existingReport = existingReports.data.find(
+              issue => issue.title === syncReportTitle
+            );
+
+            if (existingReport) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingReport.number,
+                body: summary + `\n_Updated: ${new Date().toISOString()}_`
+              });
+            } else if (missingIssues.length > 0 || orphanedIssues.length > 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: syncReportTitle,
+                body: summary + `\n_Generated: ${new Date().toISOString()}_`,
+                labels: ['sync-report', 'automation']
+              });
+            }

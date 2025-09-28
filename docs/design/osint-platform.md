@@ -9,7 +9,7 @@ The OSINT Platform provides automated web research capabilities for intelligence
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Backend API   │    │   AI Pipeline   │
-│   (E2E Tests)   │◄──►│   (FastAPI)     │◄──►│   (Async Jobs)  │
+│   (E2E Tests)   │◄──►│   (Django)      │◄──►│   (Celery Jobs) │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                                 │                        │
                                 ▼                        ▼

@@ -21,7 +21,7 @@ The project includes a complete workflow for AI-assisted development:
 4. **Traceability**: Built-in templates ensure all decisions are documented
 
 ## Stack
-- **Backend:** FastAPI + pytest
+- **Backend:** Django + Django REST Framework + pytest
 - **Workers:** Celery + Redis (placeholders)
 - **DB:** Postgres (psycopg placeholder)
 - **E2E:** Playwright (Node) for UI & flow tests

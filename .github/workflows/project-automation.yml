@@ -1,0 +1,345 @@
+name: Project Board Automation
+
+on:
+  issues:
+    types: [opened, closed, reopened, labeled, unlabeled]
+  pull_request:
+    types: [opened, closed, ready_for_review, converted_to_draft]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  auto-assign-to-project:
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'opened' &&
+      contains(github.event.issue.labels.*.name, 'task')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Issue to Project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/users/${{ github.repository_owner }}/projects/1
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+
+  update-project-status:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      repository-projects: write
+
+    steps:
+      - name: Update Project Item Status
+        uses: actions/github-script@v7
+        env:
+          PROJECT_ID: ${{ vars.PROJECT_ID }}
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+        with:
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+          script: |
+            const { GraphQLClient } = require('@octokit/graphql');
+
+            const graphql = new GraphQLClient('https://api.github.com/graphql', {
+              headers: {
+                authorization: `token ${process.env.PROJECT_TOKEN}`,
+              },
+            });
+
+            // Helper function to update project item status
+            async function updateProjectItemStatus(itemId, statusValue) {
+              const mutation = `
+                mutation UpdateProjectItem($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) {
+                  updateProjectV2ItemFieldValue(
+                    input: {
+                      projectId: $projectId
+                      itemId: $itemId
+                      fieldId: $fieldId
+                      value: { singleSelectOptionId: $value }
+                    }
+                  ) {
+                    projectV2Item {
+                      id
+                    }
+                  }
+                }
+              `;
+
+              return await graphql(mutation, {
+                projectId: process.env.PROJECT_ID,
+                itemId: itemId,
+                fieldId: 'STATUS_FIELD_ID', // This needs to be replaced with actual field ID
+                value: statusValue
+              });
+            }
+
+            // Helper function to find project item for issue/PR
+            async function findProjectItem(nodeId) {
+              const query = `
+                query FindProjectItem($nodeId: ID!) {
+                  node(id: $nodeId) {
+                    ... on Issue {
+                      projectItems(first: 10) {
+                        nodes {
+                          id
+                          project {
+                            id
+                          }
+                        }
+                      }
+                    }
+                    ... on PullRequest {
+                      projectItems(first: 10) {
+                        nodes {
+                          id
+                          project {
+                            id
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              `;
+
+              const result = await graphql(query, { nodeId });
+              return result.node?.projectItems?.nodes?.find(
+                item => item.project.id === process.env.PROJECT_ID
+              );
+            }
+
+            // Main logic
+            let statusUpdate = null;
+            let nodeId = null;
+
+            if (context.eventName === 'issues') {
+              nodeId = context.payload.issue.node_id;
+
+              switch (context.payload.action) {
+                case 'opened':
+                  statusUpdate = 'TODO_STATUS_ID';
+                  break;
+                case 'closed':
+                  statusUpdate = 'DONE_STATUS_ID';
+                  break;
+                case 'reopened':
+                  statusUpdate = 'TODO_STATUS_ID';
+                  break;
+              }
+            } else if (context.eventName === 'pull_request') {
+              nodeId = context.payload.pull_request.node_id;
+
+              switch (context.payload.action) {
+                case 'opened':
+                  statusUpdate = 'IN_PROGRESS_STATUS_ID';
+                  break;
+                case 'ready_for_review':
+                  statusUpdate = 'IN_REVIEW_STATUS_ID';
+                  break;
+                case 'converted_to_draft':
+                  statusUpdate = 'IN_PROGRESS_STATUS_ID';
+                  break;
+                case 'closed':
+                  if (context.payload.pull_request.merged) {
+                    statusUpdate = 'DONE_STATUS_ID';
+                  } else {
+                    statusUpdate = 'TODO_STATUS_ID';
+                  }
+                  break;
+              }
+            }
+
+            if (statusUpdate && nodeId) {
+              try {
+                const projectItem = await findProjectItem(nodeId);
+                if (projectItem) {
+                  await updateProjectItemStatus(projectItem.id, statusUpdate);
+                  console.log(`Updated project item status to ${statusUpdate}`);
+                }
+              } catch (error) {
+                console.error('Failed to update project status:', error);
+              }
+            }
+
+  sync-epic-and-priority:
+    if: |
+      github.event_name == 'issues' &&
+      (github.event.action == 'opened' || github.event.action == 'labeled') &&
+      contains(github.event.issue.labels.*.name, 'task')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Epic and Priority from Issue
+        uses: actions/github-script@v7
+        env:
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          PROJECT_ID: ${{ vars.PROJECT_ID }}
+        with:
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+          script: |
+            const issueTitle = context.payload.issue.title;
+            const issueLabels = context.payload.issue.labels.map(label => label.name);
+
+            // Extract task/story reference from title
+            const taskMatch = issueTitle.match(/\[T-(\d{3})[^\]]*\]/);
+            const storyMatch = issueTitle.match(/\[S-(\d{3})[^\]]*\]/);
+
+            let epic = null;
+            let priority = null;
+            let component = [];
+
+            // Determine epic from task/story reference
+            if (taskMatch) {
+              const taskNum = taskMatch[1];
+              epic = `S-${taskNum}`;
+            } else if (storyMatch) {
+              const storyNum = storyMatch[1];
+              epic = `S-${storyNum}`;
+            }
+
+            // Determine priority from labels or epic
+            if (issueLabels.includes('priority-highest')) {
+              priority = 'Highest';
+            } else if (issueLabels.includes('priority-high')) {
+              priority = 'High';
+            } else if (issueLabels.includes('priority-medium')) {
+              priority = 'Medium';
+            } else if (issueLabels.includes('priority-low')) {
+              priority = 'Low';
+            } else {
+              // Determine from epic
+              if (epic === 'S-000') priority = 'Highest';
+              else if (['S-001', 'S-002', 'S-003', 'S-015'].includes(epic)) priority = 'High';
+              else if (['S-011', 'S-012', 'S-013', 'S-014'].includes(epic)) priority = 'Medium';
+              else priority = 'High'; // Default for core features
+            }
+
+            // Determine components from labels
+            if (issueLabels.includes('backend')) component.push('Backend');
+            if (issueLabels.includes('frontend')) component.push('Frontend');
+            if (issueLabels.includes('database')) component.push('Database');
+            if (issueLabels.includes('devops')) component.push('DevOps');
+            if (issueLabels.includes('infrastructure')) component.push('Infrastructure');
+            if (issueLabels.includes('integration')) component.push('Integration');
+
+            console.log('Extracted metadata:', { epic, priority, component });
+
+            // TODO: Update project item with extracted metadata
+            // This requires implementing GraphQL mutations to update custom fields
+
+  auto-assign-reviewers:
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.action == 'ready_for_review'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign Reviewers Based on Components
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = pr.labels.map(label => label.name);
+
+            let reviewers = [];
+
+            // Assign reviewers based on component labels
+            if (labels.includes('backend')) {
+              reviewers.push('backend-team-lead');
+            }
+            if (labels.includes('frontend')) {
+              reviewers.push('frontend-team-lead');
+            }
+            if (labels.includes('devops') || labels.includes('infrastructure')) {
+              reviewers.push('devops-team-lead');
+            }
+
+            // Remove duplicates and the PR author
+            reviewers = [...new Set(reviewers)].filter(
+              reviewer => reviewer !== pr.user.login
+            );
+
+            if (reviewers.length > 0) {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                reviewers: reviewers
+              });
+            }
+
+  update-sprint-progress:
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'closed' &&
+      contains(github.event.issue.labels.*.name, 'task')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Sprint Progress Metrics
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Calculate and update sprint progress metrics
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(label => label.name);
+
+            // Extract story points from issue body or labels
+            let storyPoints = 0;
+            const spLabel = labels.find(label => label.startsWith('sp-'));
+            if (spLabel) {
+              storyPoints = parseInt(spLabel.replace('sp-', ''), 10);
+            }
+
+            // TODO: Update sprint metrics in project custom fields
+            console.log(`Task completed: ${issue.title}, Story Points: ${storyPoints}`);
+
+            // Post completion comment with metrics
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `🎉 Task completed! Story points: ${storyPoints}\n\n` +
+                    `This task has been automatically marked as Done in the project board.`
+            });
+
+  notify-dependencies:
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'closed' &&
+      contains(github.event.issue.labels.*.name, 'task')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Dependent Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const completedIssue = context.payload.issue;
+            const issueTitle = completedIssue.title;
+
+            // Extract task ID
+            const taskMatch = issueTitle.match(/\[T-(\d{3})[^\]]*\]/);
+            if (!taskMatch) return;
+
+            const taskId = taskMatch[1];
+
+            // Find issues that might depend on this one
+            const allIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'task'
+            });
+
+            // Look for dependency references in issue bodies
+            for (const issue of allIssues.data) {
+              if (issue.body && issue.body.includes(`T-${taskId}`)) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `🔗 Dependency completed: ${completedIssue.title} (#${completedIssue.number})\n\n` +
+                        `This dependency has been resolved and you can now proceed with implementation.`
+                });
+              }
+            }

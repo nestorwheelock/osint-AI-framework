@@ -56,29 +56,30 @@
 
 ## AI Coding Brief
 ```yaml
-role: "You are a senior backend engineer practicing strict TDD."
-objective: "Implement Subject CRUD operations with FastAPI and SQLAlchemy."
+role: "You are a senior Django backend engineer practicing strict TDD."
+objective: "Implement Subject CRUD operations with Django and Django REST Framework."
 constraints:
   allowed_paths:
-    - backend/app/models/
-    - backend/app/routes/subjects.py
-    - backend/app/schemas/
-    - backend/app/tests/test_subjects.py
-  database: "Use SQLAlchemy ORM with PostgreSQL"
-  testing: "Write tests first, then implement minimal code to pass"
+    - backend/apps/subjects/models.py
+    - backend/apps/subjects/views.py
+    - backend/apps/subjects/serializers.py
+    - backend/apps/subjects/urls.py
+    - backend/apps/subjects/tests.py
+  database: "Use Django ORM with PostgreSQL"
+  testing: "Write Django tests first, then implement minimal code to pass"
   security:
     - "NEVER include author attribution in commits or code"
     - "Do not reference AI assistance in any deliverables"
 tests_to_make_pass:
-  - backend/app/tests/test_subjects.py::test_create_subject_success
-  - backend/app/tests/test_subjects.py::test_get_subjects_list
-  - backend/app/tests/test_subjects.py::test_update_subject_success
-  - backend/app/tests/test_subjects.py::test_delete_subject_success
+  - backend/apps/subjects/tests.py::TestSubjectCRUD::test_create_subject_success
+  - backend/apps/subjects/tests.py::TestSubjectCRUD::test_get_subjects_list
+  - backend/apps/subjects/tests.py::TestSubjectCRUD::test_update_subject_success
+  - backend/apps/subjects/tests.py::TestSubjectCRUD::test_delete_subject_success
 definition_of_done:
-  - "All referenced tests pass in CI"
+  - "All referenced tests pass with Django test runner"
   - "API endpoints return proper HTTP status codes"
   - "Database operations are atomic with proper error handling"
-  - "OpenAPI documentation is automatically generated"
+  - "DRF API documentation is automatically generated"
   - "No attribution or AI references in code/commits"
 ```
 
@@ -86,27 +87,31 @@ definition_of_done:
 
 ### Data Model Requirements
 ```python
-class Subject(Base):
-    id: UUID (primary key)
-    name: str (required, max 255 chars)
-    description: Optional[str] (max 1000 chars)
-    aliases: List[str] (JSON array)
-    tags: List[str] (JSON array)
-    created_at: datetime
-    updated_at: datetime
+class Subject(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(max_length=1000, blank=True, null=True)
+    aliases = models.JSONField(default=list, blank=True)
+    tags = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'subjects'
+        ordering = ['-created_at']
 ```
 
 ### API Endpoints
 ```
-POST   /subjects          - Create new subject
-GET    /subjects          - List subjects (paginated)
-GET    /subjects/{id}     - Get specific subject
-PUT    /subjects/{id}     - Update subject
-DELETE /subjects/{id}     - Delete subject
+POST   /api/subjects/          - Create new subject
+GET    /api/subjects/          - List subjects (paginated)
+GET    /api/subjects/{id}/     - Get specific subject
+PUT    /api/subjects/{id}/     - Update subject
+DELETE /api/subjects/{id}/     - Delete subject
 ```
 
 ### Error Handling
 - 400: Invalid input data, duplicate names
 - 404: Subject not found
-- 422: Validation errors
+- 422: Validation errors (DRF serializer errors)
 - 500: Database connection issues

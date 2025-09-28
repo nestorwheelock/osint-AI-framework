@@ -3,25 +3,25 @@
 ## Prerequisites
 - [ ] Confirm requirements against PRD [link](../../docs/product/osint-platform.md)
 - [ ] Review data model specification [link](../../docs/data-model.md)
-- [ ] Understand FastAPI project structure in `/backend/app/`
+- [ ] Understand Django project structure in `/backend/`
 
 ## Database Setup
-- [ ] Create Subject SQLAlchemy model in `backend/app/models/subject.py`
+- [ ] Create Subject Django model in `backend/apps/subjects/models.py`
   - UUID primary key with proper field types
   - Include created_at/updated_at timestamps
   - Add JSON fields for aliases and tags arrays
-- [ ] Create database migration script for Subject table
+- [ ] Create Django migration for Subject model
 - [ ] Verify database connection and table creation
 
 ## API Schema Definition
-- [ ] Create Pydantic schemas in `backend/app/schemas/subject.py`
-  - SubjectCreate (input validation)
-  - SubjectUpdate (partial updates)
-  - SubjectResponse (output serialization)
+- [ ] Create DRF serializers in `backend/apps/subjects/serializers.py`
+  - SubjectSerializer (full CRUD operations)
+  - SubjectCreateSerializer (input validation)
+  - SubjectUpdateSerializer (partial updates)
 - [ ] Add validation rules (name length, tag format, etc.)
 
 ## Test-Driven Implementation
-- [ ] Write failing unit tests in `backend/app/tests/test_subjects.py`
+- [ ] Write failing unit tests in `backend/apps/subjects/tests.py`
   - test_create_subject_with_valid_data_returns_201
   - test_create_subject_with_invalid_data_returns_400
   - test_get_subjects_returns_paginated_list
