@@ -75,10 +75,15 @@ constraints:
   database: "Use Django ORM with PostgreSQL"
   testing: "Write Django tests first, then implement minimal code to pass"
   security:
-    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
-    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
-    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
-    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
+    - "[CRITICAL] NEVER include any AI, Claude, or assistant attribution anywhere"
+    - "[CRITICAL] NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - "[CRITICAL] Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - "[CRITICAL] This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
+  professional_standards:
+    - "[REQUIRED] NO EMOJIS in any code, documentation, comments, or deliverables"
+    - "[REQUIRED] Use text alternatives: [SUCCESS], [FAIL], [WARNING], [INFO], [CRITICAL]"
+    - "[REQUIRED] Professional formatting only: **bold**, *italic*, `code`"
+    - "[REQUIRED] All deliverables must be enterprise-appropriate and LaTeX-compatible"
 tests_to_make_pass:
   - backend/apps/subjects/tests.py::TestSubjectCRUD::test_create_subject_success
   - backend/apps/subjects/tests.py::TestSubjectCRUD::test_get_subjects_list

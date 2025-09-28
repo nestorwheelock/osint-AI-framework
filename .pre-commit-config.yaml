@@ -15,6 +15,13 @@ repos:
 
   - repo: local
     hooks:
+      - id: no-emojis
+        name: Enforce Professional Standards - No Emojis
+        entry: python scripts/check-no-emojis.py --fix
+        language: system
+        files: '\.(py|md|yml|yaml|json|js|ts|tsx|txt|rst)$'
+        require_serial: true
+
       - id: strip-claude-attribution
         name: Strip AI Attribution
         entry: python scripts/strip-claude-attribution.py --fix
