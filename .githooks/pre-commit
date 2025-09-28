@@ -1,0 +1,82 @@
+#!/bin/bash
+# Pre-commit hook to prevent Claude attribution from being committed
+# This enforces the security requirement of no AI attribution
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}🔍 Checking for AI attribution violations...${NC}"
+
+# Check if our attribution checker exists
+if [ ! -f "scripts/strip-claude-attribution.py" ]; then
+    echo -e "${RED}❌ Attribution checker script not found at scripts/strip-claude-attribution.py${NC}"
+    echo -e "${RED}   Cannot enforce no-attribution policy${NC}"
+    exit 1
+fi
+
+# Run the attribution checker on staged files only
+python_cmd="python3"
+if ! command -v python3 &> /dev/null; then
+    python_cmd="python"
+fi
+
+# Create a temporary file to store the scan results
+temp_report=$(mktemp)
+
+# Get list of staged files
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$staged_files" ]; then
+    echo -e "${GREEN}✅ No staged files to check${NC}"
+    exit 0
+fi
+
+# Check each staged file for attribution
+violations_found=false
+violation_count=0
+
+for file in $staged_files; do
+    if [ -f "$file" ]; then
+        # Check if this file contains Claude attribution
+        if grep -qi -E "(🤖 Generated with.*Claude|Co-Authored-By:.*Claude|Built with Claude|Generated with Claude|@claude.*author|Created by Claude|Developed with Claude)" "$file" 2>/dev/null; then
+            violations_found=true
+            violation_count=$((violation_count + 1))
+            echo -e "${RED}❌ VIOLATION: $file contains AI attribution${NC}"
+
+            # Show the specific lines
+            grep -ni -E "(🤖 Generated with.*Claude|Co-Authored-By:.*Claude|Built with Claude|Generated with Claude|@claude.*author|Created by Claude|Developed with Claude)" "$file" | head -3 | while read line; do
+                echo -e "${RED}   $line${NC}"
+            done
+        fi
+    fi
+done
+
+rm -f "$temp_report"
+
+if [ "$violations_found" = true ]; then
+    echo ""
+    echo -e "${RED}🚨 COMMIT BLOCKED: AI Attribution Security Violation${NC}"
+    echo -e "${RED}   Found $violation_count violation(s) in staged files${NC}"
+    echo ""
+    echo -e "${YELLOW}Security Requirement:${NC} No AI attribution is allowed in the codebase"
+    echo -e "${YELLOW}Legal/Compliance:${NC} AI attribution creates security and legal risks"
+    echo ""
+    echo -e "${GREEN}To fix these violations:${NC}"
+    echo -e "${GREEN}  1. Automatically strip attribution:${NC}"
+    echo -e "${GREEN}     python scripts/strip-claude-attribution.py . --fix --force${NC}"
+    echo -e "${GREEN}  2. Re-stage the fixed files:${NC}"
+    echo -e "${GREEN}     git add .${NC}"
+    echo -e "${GREEN}  3. Try committing again${NC}"
+    echo ""
+    echo -e "${YELLOW}Alternatively, manually edit the files to remove AI attribution${NC}"
+    echo ""
+    exit 1
+else
+    echo -e "${GREEN}✅ No AI attribution found - security check passed!${NC}"
+    exit 0
+fi

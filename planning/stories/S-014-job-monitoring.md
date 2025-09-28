@@ -66,10 +66,11 @@ constraints:
     - backend/app/routes/jobs.py
     - backend/app/tests/test_job_monitor.py
   dependencies: "Celery for background jobs, WebSockets for real-time updates"
-  testing: "Test job lifecycle, error handling, and progress tracking"
-  security:
-    - "NEVER include author attribution in commits or code"
-    - "Do not reference AI assistance in any deliverables"
+  testing: "Test job lifecycle, error handling, and progress tracking"  security:
+    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
 tests_to_make_pass:
   - backend/app/tests/test_job_monitor.py::test_job_tracking
   - backend/app/tests/test_job_monitor.py::test_progress_updates

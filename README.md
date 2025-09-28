@@ -1,230 +1,534 @@
-# OSINT Framework
+# OSINT Research Platform
 
-A TDD-friendly scaffold for a web scraping + AI analysis platform designed for Open Source Intelligence (OSINT) research.
+A comprehensive, AI-assisted Open Source Intelligence research platform designed for systematic data collection, analysis, and reporting. Built with Django and modern DevOps practices, featuring automated workflows and Claude Code integration.
 
-## 🤖 AI-Assisted Development
+## 🎯 Project Overview
 
-This project is designed to work seamlessly with **Claude Code** for AI-assisted development:
+The OSINT Research Platform provides intelligence professionals and researchers with powerful tools to:
 
-- **Structured Planning**: Complete project planning framework with PRDs, design docs, and user stories
-- **Claude-Ready Tasks**: Granular task breakdowns that Claude can execute independently
-- **Test-Driven Development**: Built-in TDD approach with pytest and Playwright testing
-- **Documentation-First**: Human and machine-readable documentation structure
+- **Systematically collect data** from multiple web sources using ethical scraping
+- **Analyze content** with AI-powered entity extraction and pattern recognition
+- **Organize research** around subjects and investigation sessions
+- **Generate reports** in multiple formats with timeline assembly
+- **Maintain compliance** with robots.txt and rate limiting controls
 
-### Working with Claude
+### Key Features
 
-The project includes a complete workflow for AI-assisted development:
+- 🕷️ **Multi-Engine Search**: Integrate Google, Bing, DuckDuckGo, and custom sources
+- 🎭 **Web Scraping**: Playwright-based automation with JavaScript support
+- 🤖 **AI Analysis**: OpenAI-powered entity extraction and content analysis
+- 📊 **Smart Organization**: Subject-based research with tagging and filtering
+- 📈 **Timeline Assembly**: Chronological reconstruction of findings
+- 📄 **Report Generation**: Professional PDF reports with customizable templates
+- ⚖️ **Ethical Controls**: Built-in compliance with robots.txt and rate limiting
+- 🔄 **Real-time Monitoring**: Job progress tracking and status updates
 
-1. **Planning Layer** (`/planning/`): Machine-friendly task lists and user stories
-2. **Documentation** (`/docs/`): Human-readable design and product requirements
-3. **Execution**: Give Claude specific story links and let it work autonomously
-4. **Traceability**: Built-in templates ensure all decisions are documented
+## 🏗️ Architecture
 
-## Stack
-- **Backend:** Django + Django REST Framework + pytest
-- **Workers:** Celery + Redis (placeholders)
-- **DB:** Postgres (psycopg placeholder)
-- **E2E:** Playwright (Node) for UI & flow tests
-- **CI:** GitHub Actions runs pytest and Playwright
+### Technology Stack
 
-> Start by pushing this repo to GitHub, then open issues using the included templates.
+- **Backend**: Django + Django REST Framework + Celery
+- **Frontend**: React + TypeScript + Vite
+- **Database**: PostgreSQL with Redis for caching and job queues
+- **Search**: Playwright for web scraping with multiple search engine adapters
+- **AI**: OpenAI GPT models for entity extraction and analysis
+- **Infrastructure**: Docker + Docker Compose with GitHub Actions CI/CD
+- **Testing**: pytest (backend) + Jest + Playwright (frontend/E2E)
 
+### System Architecture
 
-## Quick start
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend API   │    │   AI Pipeline   │
+│   (React/TS)    │◄──►│   (Django)      │◄──►│   (Celery Jobs) │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Web Scraping  │    │   PostgreSQL    │    │   File Storage  │
+│   (Playwright)  │    │   (Metadata)    │    │   (HTML/PDFs)   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Core Services
+
+1. **Subject Management**: Create and organize investigation targets
+2. **Search Orchestrator**: Coordinate multi-engine search queries
+3. **Web Scraper**: Playwright-based page fetching and content extraction
+4. **Content Processor**: Text extraction, language detection, deduplication
+5. **AI Analyzer**: Entity extraction and content analysis pipelines
+6. **Export Engine**: Generate reports in multiple formats (JSONL, PDF)
+7. **Job Monitor**: Real-time progress tracking and status updates
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Docker & Docker Compose** (recommended)
+- **Python 3.11+** (for local development)
+- **Node.js 20+** (for frontend development)
+- **PostgreSQL** (if running without Docker)
+- **Redis** (for job queues and caching)
+
+### Option 1: Docker Development (Recommended)
 
 ```bash
-# Backend (dev)
+# Clone the repository
+git clone https://github.com/yourusername/osint-framework.git
+cd osint-framework
+
+# Copy environment configuration
+cp .env.example .env
+# Edit .env with your API keys (OpenAI, etc.)
+
+# Start all services
+docker-compose -f docker-compose.dev.yml up -d
+
+# View logs
+docker-compose logs -f
+
+# Run database migrations
+docker-compose exec backend python manage.py migrate
+
+# Create superuser (optional)
+docker-compose exec backend python manage.py createsuperuser
+
+# Access the application
+# Backend API: http://localhost:8000
+# Frontend: http://localhost:3000
+# Admin: http://localhost:8000/admin
+```
+
+### Option 2: Local Development
+
+#### Backend Setup
+
+```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\\Scripts\\activate
+
+# Install dependencies
 pip install -U pip
 pip install -e .[dev]
-uvicorn app.main:app --reload
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your configuration
+
+# Run migrations
+python manage.py migrate
+
+# Start development server
+python manage.py runserver
 
 # Run tests
-pytest -q
+pytest
+```
 
-# Frontend E2E (requires Node 18+)
-cd ../frontend
+#### Frontend Setup
+
+```bash
+cd frontend
+
+# Install dependencies
 npm install
+
+# Install Playwright browsers
 npx playwright install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Run E2E tests
 npx playwright test
 ```
 
-Where everything goes (repo layout)
+### Environment Configuration
 
-Use docs at the root (not inside src). If you ever add code later, it can live in src/ or packages/, but your planning layer is separate and stable.
+Create `.env` file with required variables:
 
-/docs/                 ← human-readable source of truth
-  /product/            ← PRDs (problem → users → success metrics)
-  /design/             ← architecture/design docs & ADRs
-  /rfcs/               ← proposals needing review/decision
-  /runbooks/           ← ops/how-to, “how to run X locally”
-  /qa/                 ← test plans, acceptance criteria
-  /glossary.md         ← shared terms
+```bash
+# Database
+DATABASE_URL=postgresql://osint_user:password@localhost:5432/osint_platform
 
-/planning/             ← machine-friendly planning
-  roadmap.md           ← quarter/epic goals
-  backlog.md           ← prioritized list with links to stories
-  stories/             ← one file per user story (short)
-  tasks/               ← granular task lists/checklists
-  release-notes/       ← what shipped this week
+# Redis
+REDIS_URL=redis://localhost:6379/0
 
-/standards/
-  conventions.md       ← naming, labels, branching, commit style
-  architecture.md      ← system overview diagram + principles
+# API Keys
+OPENAI_API_KEY=your_openai_api_key_here
 
-# (optional later)
-/src/                  ← code (or /packages/<service>/src in a monorepo)
-/scripts/              ← helper scripts if you add automation someday
+# Django Settings
+SECRET_KEY=your_secret_key_here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
 
-
-TL;DR: docs/ is for thinking/deciding; planning/ is for execution units Claude can consume; src/ (if/when it exists) is for code.
-
-Workflow (end-to-end)
-
-Idea → PRD → Design → Stories → Issues → Execution
-
-Write the PRD (/docs/product/<project>.md)
-Keep it short: problem, users, scope, success metrics, out-of-scope.
-
-Write the Design (/docs/design/<project>.md)
-High-level architecture, constraints, alternatives, risks, and a “work breakdown” section that mirrors the stories you’ll create.
-
-Author the Stories (one file per story in /planning/stories/)
-Each story is small, with acceptance criteria and a “definition of done.”
-
-Break down into Tasks (/planning/tasks/<story-id>.md)
-A simple checklist Claude can follow. Link back to the story and design doc.
-
-Create Issues
-Copy/paste each story/task into a GitHub issue. (If you later want automation, you can do that—but you said no code, so we’ll keep it manual and consistent.)
-
-Have Claude execute
-Give Claude the links to the design doc + specific story issue. Ask it to work story-by-story, and to update the issue with progress notes, test steps, and any questions.
-
-Lightweight templates (copy/paste)
-1) PRD (Product Requirements)
-
-# <Project Name> — PRD
-## Problem
-## Users & Use Cases
-## Goals / Success Metrics
-- e.g., “Reduce X by 20%…”
-## Scope (In)
-## Out of Scope
-## Constraints & Assumptions
-## Rollout & Risks
-## Links
-- Design: /docs/design/<project>.md
-- Stories: /planning/backlog.md
-
-2) Design Doc
-# <Project Name> — Design
-## Context
-## Proposed Architecture
-## Data/Integrations
-## Trade-offs & Alternatives
-## Security/Privacy
-## Observability
-## Work Breakdown (map to stories)
-- S-101: <title>
-- S-102: <title>
-## Open Questions
-3) User Story
-# S-101 — <Concise title>
-**As a** <user/persona>  
-**I want** <capability>  
-**So that** <value>
-
-## Acceptance Criteria
-- [ ] When <condition>, <observable result>
-- [ ] …
-
-## Definition of Done
-- [ ] Code, tests, docs updated
-- [ ] Telemetry/alerts configured
-- [ ] Demo GIF or screenshot attached
-
-## Dependencies
-- Design section: <anchor link>
-- Related story: S-102
-
-## Links
-- PRD: /docs/product/<project>.md
-- Design: /docs/design/<project>.md
-
-4) Task Checklist (for a story)
-# T-101 — Tasks for S-101
-- [ ] Confirm requirements against PRD (link)
-- [ ] Draft interface/schema (attach snippet)
-- [ ] Implement feature flag / config toggle
-- [ ] Add unit/integ tests covering ACs
-- [ ] Update /runbooks/<topic>.md
-- [ ] Self-QA using test plan /docs/qa/<project>.md
-- [ ] Open PR; request review from @owner
-
-- **S-101**: <title> — Priority: High — Estimate: 3d
-  Links: [Story](/planning/stories/S-101.md) · [Design](/docs/design/<project>.md)
-
-How to make Claude effective
-
-Always provide links: PRD + Design + specific Story. Avoid giving it the entire repo at once.
-
-Bounded scope: “Work only on S-101. If you need info, ask; don’t invent dependencies.”
-
-Use the ACs as tests: Ask Claude to show how each acceptance criterion was satisfied (even if it’s reasoning or commands, not code).
-
-Require artifacts: “Reply with: (1) plan, (2) assumptions, (3) risks, (4) open questions, (5) step-by-step execution checklist.”
-
-Traceability: In the issue, have Claude paste a short “Decision log” section when it makes choices so humans can review later.
-
-Labels & hygiene (keeps GitHub tidy)
-
-Use a small, consistent set:
-
-type:story, type:task, type:bug
-
-status:ready, status:in-progress, status:blocker, status:review, status:done
-
-area:frontend, area:backend, area:infra, etc.
-
-Milestones = releases or sprints.
-
-Where “src” fits (if/when you add code)
-
-Greenfield app: src/ at the repo root.
-
-Monorepo: packages/<service>/src per service/package.
-
-Either way, docs and planning stay put at the top-level so product/design don’t move if code is reorganized.
-
-## 🚀 Getting Started with Claude Code
-
-### Quick Claude Commands
-
-Paste these commands to get Claude working on specific tasks:
-
-**For new features:**
-```
-Read /docs/product/<project>.md and /docs/design/<project>.md. Then open /planning/stories/S-101.md. Confirm the acceptance criteria, list assumptions/questions, and produce a numbered execution plan for S-101 only. Do not start any other story. When you're done, update the S-101 issue with a status note and any blockers.
+# Frontend
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
-**For project setup:**
+## 🤖 AI-Assisted Development
+
+This project is optimized for AI-assisted development with **Claude Code**:
+
+### Built-in Claude Integration
+
+- **📋 Structured Planning**: Complete project documentation with PRDs, design docs, and user stories
+- **🎯 Task-Ready Workflows**: Granular task breakdowns that Claude can execute independently
+- **✅ Test-Driven Development**: Built-in TDD approach with comprehensive testing
+- **🔗 Documentation Links**: Cross-referenced documentation for full context
+- **🤖 AI Coding Briefs**: Specific instructions for each development task
+
+### Working with Claude Code
+
+The project includes GitHub Actions integration for Claude Code:
+
+1. **@claude mentions** in issues and PRs trigger AI assistance
+2. **Automated issue creation** from markdown task files
+3. **Project board integration** with automated status updates
+4. **Bidirectional sync** between planning files and GitHub Issues
+
+#### Quick Claude Commands
+
+**Start a new feature:**
 ```
-Set up the development environment by following the backend and frontend setup instructions. Run all tests to ensure everything works. Report any setup issues or missing dependencies.
+Read the design document and implement user story S-001. Follow the test-driven development approach and update the issue with progress.
 ```
 
-**For testing:**
+**Review and fix:**
 ```
-Run the complete test suite (backend pytest + frontend Playwright). Fix any failing tests and ensure all acceptance criteria are met. Document any test coverage gaps.
+@claude review this PR for security, performance, and adherence to Django best practices.
+```
+
+**Setup assistance:**
+```
+@claude help me set up the development environment following the installation guide.
 ```
 
 ### Project Structure for AI Development
 
-This framework is optimized for Claude Code workflows:
+```
+├── docs/                          # Human-readable documentation
+│   ├── product/                   # Product requirements documents
+│   ├── design/                    # Architecture and design documents
+│   ├── infrastructure/            # DevOps and deployment guides
+│   └── devops/                    # GitHub integration documentation
+├── planning/                      # Machine-friendly planning
+│   ├── stories/                   # User stories (S-001 to S-015)
+│   ├── tasks/                     # Task breakdowns (T-001 to T-015)
+│   └── backlog.md                 # Epic overview and sprint planning
+├── backend/                       # Django application
+│   ├── apps/                      # Django apps (subjects, search, etc.)
+│   ├── config/                    # Django settings and configuration
+│   └── tests/                     # Backend tests
+├── frontend/                      # React application
+│   ├── src/                       # Source code
+│   └── tests/                     # Frontend tests
+└── .github/                       # GitHub integration
+    ├── workflows/                 # CI/CD and automation
+    └── ISSUE_TEMPLATE/            # Issue templates for different task types
+```
 
-- 📋 **Issue Templates**: Standardized GitHub issue templates for consistent task definition
-- 🎯 **Bounded Scope**: Each story/task is self-contained with clear acceptance criteria
-- 🔗 **Linked Artifacts**: PRDs, designs, and stories are cross-referenced for context
-- ✅ **Definition of Done**: Clear completion criteria for every task
-- 📊 **Progress Tracking**: Built-in status updates and decision logging
+## 📖 Development Guide
+
+### User Stories and Epic Overview
+
+The platform is built around **15 user stories** organized into **5 sprints**:
+
+#### Pre-Sprint: Infrastructure (S-000)
+- **S-000**: Environment setup, Docker configuration, CI/CD pipeline
+
+#### Sprint 1: Foundation (S-001, S-002, S-009)
+- **S-001**: Subject creation and management
+- **S-002**: Investigation session management
+- **S-009**: Configuration and settings management
+
+#### Sprint 2: Data Collection (S-003, S-004, S-010)
+- **S-003**: Multi-engine meta-search implementation
+- **S-004**: Playwright web scraping with JavaScript support
+- **S-010**: Ethical scraping controls and compliance
+
+#### Sprint 3: Content Processing (S-005, S-006, S-007, S-008)
+- **S-005**: Text extraction and language detection
+- **S-006**: AI-powered entity extraction and analysis
+- **S-007**: Labeling and filtering system
+- **S-008**: Export functionality (JSONL, reports)
+
+#### Sprint 4: Enhanced Features (S-011, S-012, S-013, S-014)
+- **S-011**: Timeline assembly and chronological reconstruction
+- **S-012**: Content deduplication and similarity detection
+- **S-013**: Professional PDF report generation
+- **S-014**: Real-time job monitoring and progress tracking
+
+#### Sprint 5: Integration (S-015)
+- **S-015**: Final integration, performance optimization, production deployment
+
+### Development Workflow
+
+1. **Planning**: Review user stories in `planning/stories/`
+2. **Task Breakdown**: Follow task lists in `planning/tasks/`
+3. **Implementation**: Use test-driven development approach
+4. **Testing**: Run full test suite (backend + frontend + E2E)
+5. **Review**: Use Claude Code for automated code review
+6. **Integration**: Automated deployment via GitHub Actions
+
+### Testing Strategy
+
+#### Backend Testing (Django + pytest)
+```bash
+# Run all backend tests
+pytest
+
+# Run with coverage
+pytest --cov=apps --cov-report=html
+
+# Run specific test file
+pytest apps/subjects/tests.py
+
+# Run specific test
+pytest apps/subjects/tests.py::TestSubjectCRUD::test_create_subject
+```
+
+#### Frontend Testing (Jest + React Testing Library)
+```bash
+# Run unit tests
+npm test
+
+# Run with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- src/components/SubjectList.test.tsx
+```
+
+#### End-to-End Testing (Playwright)
+```bash
+# Run all E2E tests
+npx playwright test
+
+# Run in headed mode
+npx playwright test --headed
+
+# Run specific test
+npx playwright test tests/subject-management.spec.ts
+
+# Generate test report
+npx playwright show-report
+```
+
+## 🔧 GitHub Integration & Automation
+
+### Automated Workflows
+
+The project includes comprehensive GitHub Actions automation:
+
+#### 1. Task-to-Issue Synchronization
+- **Trigger**: Changes to `planning/tasks/*.md` files
+- **Action**: Automatically creates/updates GitHub Issues
+- **Labels**: Smart labeling based on priority, component, and epic
+
+#### 2. Claude Code Integration
+- **Trigger**: @claude mentions in issues/PRs
+- **Action**: AI-powered code review and assistance
+- **Context**: Automatic loading of relevant documentation
+
+#### 3. Project Board Automation
+- **Trigger**: Issue/PR lifecycle events
+- **Action**: Updates project board status automatically
+- **Features**: Auto-assignment, status transitions, progress tracking
+
+#### 4. Bidirectional Sync
+- **Purpose**: Keep markdown files and GitHub Issues synchronized
+- **Features**: Conflict resolution, integrity validation, change tracking
+
+### Setting Up GitHub Integration
+
+#### 1. Create GitHub Project Board
+
+Follow the detailed guide in `docs/devops/github-project-setup.md`:
+
+1. Create new GitHub Project (Table view)
+2. Configure custom fields (Epic, Priority, Sprint, Component)
+3. Set up multiple views (Board, Timeline, Sprint Planning)
+4. Enable built-in automations
+
+#### 2. Configure Repository Secrets
+
+Add these secrets in your GitHub repository settings:
+
+```
+ANTHROPIC_API_KEY      # Your Claude API key
+PROJECT_TOKEN          # Personal access token with project permissions
+```
+
+#### 3. Update Project Configuration
+
+In `.github/workflows/sync-tasks-to-issues.yml`, update:
+
+```yaml
+project-url: https://github.com/users/YOUR_USERNAME/projects/PROJECT_NUMBER
+```
+
+### Issue Templates
+
+The project includes specialized issue templates:
+
+- **📋 User Story**: Complete user story with acceptance criteria
+- **🔧 Backend Task**: Django backend development tasks
+- **🎨 Frontend Task**: React frontend development tasks
+- **🏗️ Infrastructure Task**: DevOps and environment setup tasks
+- **📊 Epic**: High-level feature tracking and management
+
+## 🚢 Deployment
+
+### Development Deployment
+
+```bash
+# Start development environment
+docker-compose -f docker-compose.dev.yml up -d
+
+# View service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f backend
+```
+
+### Production Deployment
+
+```bash
+# Build production images
+docker-compose -f docker-compose.prod.yml build
+
+# Start production services
+docker-compose -f docker-compose.prod.yml up -d
+
+# Run database migrations
+docker-compose exec backend python manage.py migrate
+
+# Collect static files
+docker-compose exec backend python manage.py collectstatic --noinput
+```
+
+### Environment-Specific Configuration
+
+#### Development (`docker-compose.dev.yml`)
+- Django development server with hot reload
+- Debug mode enabled
+- Volume mounting for live code changes
+- Exposed ports for debugging
+
+#### Production (`docker-compose.prod.yml`)
+- Gunicorn WSGI server
+- Optimized Docker images
+- Environment variable configuration
+- Health checks and restart policies
+
+### Monitoring and Logging
+
+#### Health Checks
+- **Backend**: `/healthz/` endpoint checks database and Redis connectivity
+- **Frontend**: Build status and asset loading validation
+- **Infrastructure**: Docker container health monitoring
+
+#### Logging Strategy
+- **Structured JSON logs** for all application components
+- **Request/response logging** for API debugging
+- **Error tracking** with stack traces and context
+- **Performance metrics** for optimization insights
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+#### Docker Issues
+```bash
+# Reset Docker environment
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up -d
+
+# Check container logs
+docker-compose logs backend
+```
+
+#### Database Issues
+```bash
+# Reset database
+docker-compose exec backend python manage.py flush
+docker-compose exec backend python manage.py migrate
+```
+
+#### Permission Issues
+```bash
+# Fix file permissions
+sudo chown -R $USER:$USER .
+```
+
+#### Port Conflicts
+```bash
+# Check port usage
+sudo lsof -i :8000
+sudo lsof -i :3000
+
+# Kill conflicting processes
+sudo kill -9 $(sudo lsof -t -i :8000)
+```
+
+### Performance Optimization
+
+#### Backend Performance
+- **Database Query Optimization**: Use Django Debug Toolbar
+- **Caching Strategy**: Redis for frequently accessed data
+- **API Response Time**: Target <200ms (95th percentile)
+
+#### Frontend Performance
+- **Bundle Optimization**: Code splitting and lazy loading
+- **Asset Optimization**: Image compression and CDN usage
+- **Render Performance**: React component memoization
+
+### Getting Help
+
+1. **Documentation**: Check `docs/` directory for detailed guides
+2. **GitHub Issues**: Use issue templates for bug reports and feature requests
+3. **Claude Code**: Use @claude mentions for AI assistance
+4. **Community**: Contribute improvements and share experiences
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our contributing guidelines:
+
+1. **Fork the repository** and create a feature branch
+2. **Follow the development workflow** with test-driven development
+3. **Use the issue templates** for consistent task definition
+4. **Leverage Claude Code** for AI-assisted development
+5. **Submit pull requests** with comprehensive testing
+
+### Development Standards
+
+- **Code Quality**: Follow Django and React best practices
+- **Testing**: Maintain >95% test coverage
+- **Documentation**: Update docs for all changes
+- **Security**: Never commit secrets or API keys
+- **AI Ethics**: No AI attribution in code or commits
+
+## 🔗 Useful Links
+
+- **📋 Project Planning**: [planning/backlog.md](planning/backlog.md)
+- **🏗️ Architecture Guide**: [docs/design/osint-platform.md](docs/design/osint-platform.md)
+- **🤖 Claude Integration**: [docs/devops/github-ai-integration.md](docs/devops/github-ai-integration.md)
+- **🚀 Deployment Guide**: [docs/infrastructure/installation-guide.md](docs/infrastructure/installation-guide.md)
+- **📊 GitHub Project Setup**: [docs/devops/github-project-setup.md](docs/devops/github-project-setup.md)
+
+---
+
+**

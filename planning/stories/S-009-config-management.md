@@ -65,10 +65,11 @@ constraints:
     - backend/app/routes/config.py
     - backend/app/tests/test_config.py
   dependencies: "Pydantic for validation, cryptography for encryption"
-  testing: "Test validation, encryption, and security scenarios"
-  security:
-    - "NEVER include author attribution in commits or code"
-    - "Do not reference AI assistance in any deliverables"
+  testing: "Test validation, encryption, and security scenarios"  security:
+    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
     - "NEVER log or expose API keys or sensitive configuration"
 tests_to_make_pass:
   - backend/app/tests/test_config.py::test_secure_config_storage

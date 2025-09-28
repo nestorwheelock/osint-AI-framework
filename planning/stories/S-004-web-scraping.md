@@ -67,10 +67,11 @@ constraints:
     - backend/app/models/webpage.py
     - backend/app/tests/test_scraper.py
   dependencies: "Playwright for Python, async/await patterns"
-  testing: "Mock Playwright for unit tests, real browser for integration"
-  security:
-    - "NEVER include author attribution in commits or code"
-    - "Do not reference AI assistance in any deliverables"
+  testing: "Mock Playwright for unit tests, real browser for integration"  security:
+    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
 tests_to_make_pass:
   - backend/app/tests/test_scraper.py::test_fetch_page_success
   - backend/app/tests/test_scraper.py::test_fetch_handles_errors

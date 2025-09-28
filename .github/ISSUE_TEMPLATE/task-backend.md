@@ -115,8 +115,10 @@ constraints:
   framework: "Django with Django REST Framework and PostgreSQL"
   testing: "Write Django tests first, then implement minimal code to pass"
   security:
-    - "NEVER include author attribution in commits or code"
-    - "Do not reference AI assistance in any deliverables"
+    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
     - "Implement proper input validation and error handling"
 tests_to_make_pass:
   - backend/apps/*/tests.py

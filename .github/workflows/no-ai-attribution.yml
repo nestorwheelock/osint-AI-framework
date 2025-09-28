@@ -1,0 +1,141 @@
+name: No AI Attribution Enforcement
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  check-no-attribution:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check for Claude Attribution (Scan Only)
+        id: scan
+        run: |
+          python scripts/strip-claude-attribution.py . > attribution_report.txt 2>&1
+          echo "scan_exit_code=$?" >> $GITHUB_OUTPUT
+
+          # Store report for later use
+          cat attribution_report.txt
+
+          # Check if violations were found
+          if grep -q "COMPLIANCE VIOLATION" attribution_report.txt; then
+            echo "violations_found=true" >> $GITHUB_OUTPUT
+            echo "## ❌ AI Attribution Violations Found" >> violation_summary.md
+            echo "" >> violation_summary.md
+            echo "The following Claude attributions were detected:" >> violation_summary.md
+            echo "" >> violation_summary.md
+            echo '```' >> violation_summary.md
+            cat attribution_report.txt >> violation_summary.md
+            echo '```' >> violation_summary.md
+            echo "" >> violation_summary.md
+            echo "**Security Requirement**: All AI attribution must be removed for compliance." >> violation_summary.md
+          else
+            echo "violations_found=false" >> $GITHUB_OUTPUT
+            echo "✅ No AI attribution found - compliance check passed!" >> violation_summary.md
+          fi
+
+      - name: Comment on PR with violations
+        if: github.event_name == 'pull_request' && steps.scan.outputs.violations_found == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('violation_summary.md', 'utf8');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: summary + '\n\n' +
+                    '**To fix these violations:**\n' +
+                    '```bash\n' +
+                    '# Automatically strip attribution\n' +
+                    'python scripts/strip-claude-attribution.py . --fix --force\n' +
+                    '```\n\n' +
+                    '**Security Note**: This check ensures no AI attribution is present in the codebase for security and compliance requirements.'
+            });
+
+      - name: Fail if violations found
+        if: steps.scan.outputs.violations_found == 'true'
+        run: |
+          echo "❌ AI attribution violations found! This violates security requirements."
+          echo "Run the strip-claude-attribution script to fix these issues."
+          exit 1
+
+  auto-fix-attribution:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Strip Claude Attribution
+        run: |
+          python scripts/strip-claude-attribution.py . --fix --force
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes_made=true" >> $GITHUB_OUTPUT
+            echo "📝 Changes made to strip AI attribution:"
+            git status --short
+          else
+            echo "changes_made=false" >> $GITHUB_OUTPUT
+            echo "✅ No AI attribution found to remove"
+          fi
+
+      - name: Commit changes
+        if: steps.changes.outputs.changes_made == 'true'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          git add .
+          git commit -m "Security: Strip AI attribution from codebase
+
+          Automatically removed AI attribution for security compliance.
+
+          - Removed Claude references and credits
+          - Maintained functionality while ensuring no AI attribution
+          - Enforced security policy compliance"
+
+          git push
+
+      - name: Create summary
+        run: |
+          echo "## 🔒 AI Attribution Removal Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.changes.outputs.changes_made }}" == "true" ]; then
+            echo "✅ Successfully removed AI attribution from codebase" >> $GITHUB_STEP_SUMMARY
+            echo "📝 Changes have been committed automatically" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No AI attribution found - codebase is compliant" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Security Status**: Compliant ✅" >> $GITHUB_STEP_SUMMARY

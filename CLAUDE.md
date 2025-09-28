@@ -38,8 +38,12 @@
 - **Documentation**: Inline comments for complex logic, API documentation via OpenAPI
 
 ### Security Requirements
-- **CRITICAL**: NEVER include author attribution in code, comments, commits, or documentation
-- **CRITICAL**: Do not reference AI assistance in any deliverables
+- **🚨 CRITICAL - AI ATTRIBUTION PROHIBITION**:
+  - NEVER include any Claude, AI, or assistant attribution in code, comments, commits, or documentation
+  - NEVER use phrases like "Generated with Claude", "Co-Authored-By: Claude", "Built with Claude Code", etc.
+  - NEVER reference AI assistance, Claude mentions, or automated generation in any deliverables
+  - NEVER add credits, thanks, or acknowledgments to Claude or AI tools
+  - This is a SECURITY REQUIREMENT for compliance and legal reasons
 - **Input Validation**: Sanitize all user inputs and API parameters
 - **Authentication**: Implement proper JWT handling and session management
 - **Database**: Use parameterized queries, implement proper access controls
@@ -239,4 +243,14 @@ Claude has access to:
 - Request explanation of implementation decisions
 - Ask for test coverage and validation strategies
 
-Remember: Claude will automatically follow the security requirements (no attribution) and implementation guidelines specified in this document and the related task files.
+## ⚠️ CRITICAL SECURITY REMINDER
+
+**NEVER ADD AI ATTRIBUTION**: This project has a strict NO AI ATTRIBUTION policy for security and compliance reasons. Never include any references to Claude, AI assistance, or automated generation in:
+- Code comments
+- Commit messages
+- Documentation
+- Pull request descriptions
+- Issue comments
+- Any project deliverables
+
+Violation of this policy creates security and legal risks. All AI attribution will be automatically detected and removed by our compliance systems.

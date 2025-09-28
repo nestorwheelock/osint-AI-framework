@@ -33,9 +33,6 @@
 
 <body>
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
 **Types:** feat, fix, docs, style, refactor, test, chore

@@ -66,10 +66,11 @@ constraints:
     - backend/apps/subjects/urls.py
     - backend/apps/subjects/tests.py
   database: "Use Django ORM with PostgreSQL"
-  testing: "Write Django tests first, then implement minimal code to pass"
-  security:
-    - "NEVER include author attribution in commits or code"
-    - "Do not reference AI assistance in any deliverables"
+  testing: "Write Django tests first, then implement minimal code to pass"  security:
+    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
 tests_to_make_pass:
   - backend/apps/subjects/tests.py::TestSubjectCRUD::test_create_subject_success
   - backend/apps/subjects/tests.py::TestSubjectCRUD::test_get_subjects_list
