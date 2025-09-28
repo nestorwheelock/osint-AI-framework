@@ -9,17 +9,17 @@
 - **S-002**: [Start Investigation Session](stories/S-002-start-session.md) — Priority: High — Estimate: 2d
   Links: [Story](stories/S-002-start-session.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-002-start-session.md)
 
-- **S-009**: [Configuration Management](stories/S-009-config-management.md) — Priority: High — Estimate: 2d
+- **S-009**: [Configuration Management](stories/S-009-config-management.md) — Priority: High — Estimate: 3d
   Links: [Story](stories/S-009-config-management.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-009-config-management.md)
 
 ### Data Collection Engine
 - **S-003**: [Meta-Search Implementation](stories/S-003-meta-search.md) — Priority: High — Estimate: 3d
   Links: [Story](stories/S-003-meta-search.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-003-meta-search.md)
 
-- **S-004**: [Playwright Web Scraping](stories/S-004-web-scraping.md) — Priority: High — Estimate: 3d
+- **S-004**: [Playwright Web Scraping](stories/S-004-web-scraping.md) — Priority: High — Estimate: 4d
   Links: [Story](stories/S-004-web-scraping.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-004-web-scraping.md)
 
-- **S-010**: [Ethical Scraping Controls](stories/S-010-ethical-controls.md) — Priority: High — Estimate: 2d
+- **S-010**: [Ethical Scraping Controls](stories/S-010-ethical-controls.md) — Priority: High — Estimate: 3d
   Links: [Story](stories/S-010-ethical-controls.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-010-ethical-controls.md)
 
 ### Content Processing Pipeline
@@ -29,7 +29,7 @@
 - **S-006**: [AI Entity Extraction](stories/S-006-entity-extraction.md) — Priority: High — Estimate: 4d
   Links: [Story](stories/S-006-entity-extraction.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-006-entity-extraction.md)
 
-- **S-007**: [Labeling & Filtering System](stories/S-007-labeling-system.md) — Priority: High — Estimate: 2d
+- **S-007**: [Labeling & Filtering System](stories/S-007-labeling-system.md) — Priority: High — Estimate: 3d
   Links: [Story](stories/S-007-labeling-system.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-007-labeling-system.md)
 
 - **S-008**: [Export Functionality](stories/S-008-export-functionality.md) — Priority: High — Estimate: 2d
@@ -41,7 +41,7 @@
 - **S-011**: [Timeline Assembly](stories/S-011-timeline-assembly.md) — Priority: Medium — Estimate: 3d
   Links: [Story](stories/S-011-timeline-assembly.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-011-timeline-assembly.md)
 
-- **S-012**: [Duplicate Detection](stories/S-012-duplicate-detection.md) — Priority: Medium — Estimate: 2d
+- **S-012**: [Duplicate Detection](stories/S-012-duplicate-detection.md) — Priority: Medium — Estimate: 3d
   Links: [Story](stories/S-012-duplicate-detection.md) · [Design](../docs/design/osint-platform.md) · [Tasks](tasks/T-012-duplicate-detection.md)
 
 - **S-013**: [PDF Report Generation](stories/S-013-pdf-reports.md) — Priority: Medium — Estimate: 3d

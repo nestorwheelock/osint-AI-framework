@@ -137,11 +137,7 @@ git commit -m "feat(subjects): implement CRUD operations
 Implements S-001: Create Subject with full test coverage
 - Add Subject model with SQLAlchemy
 - Create FastAPI CRUD endpoints
-- Add comprehensive test suite
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
+- Add comprehensive test suite"
 
 # Push and create PR
 git push -u origin feature/S-001-create-subject
