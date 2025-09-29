@@ -3,7 +3,7 @@
 **Milestone**: Sprint 1: Foundation & Core Infrastructure
 **Status**:  COMPLETED
 **Duration**: Pre-Epoch through S-002 Implementation
-**GitHub Milestone**: [#1](https://github.com/nestorwheelock/osint-LLM-framework/milestone/1)
+**GitHub Milestone**: [#1](https://github.com/nestorwheelock/osint-AI-framework/milestone/1)
 **Test Coverage**: 28/28 tests passing (100%)
 
 ##  Sprint 1 Objectives

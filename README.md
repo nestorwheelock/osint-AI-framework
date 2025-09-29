@@ -1,10 +1,10 @@
-# OSINT LLM Framework
+# OSINT AI Framework
 
-An AI-powered Open Source Intelligence framework that leverages Large Language Models for intelligent data collection, analysis, and reporting. Built with Django and modern DevOps practices, featuring automated workflows and Claude Code integration.
+A comprehensive AI-powered Open Source Intelligence framework that leverages multiple AI technologies for intelligent data collection, analysis, and automated reporting. Built with Django and modern DevOps practices, featuring advanced AI capabilities and automated workflows.
 
-## 🎯 Project Overview
+##  Project Overview
 
-The OSINT LLM Framework provides intelligence professionals and researchers with powerful AI-enhanced tools to:
+The OSINT AI Framework provides intelligence professionals and researchers with comprehensive AI-enhanced tools to:
 
 - **Systematically collect data** from multiple web sources using ethical scraping
 - **Analyze content** with AI-powered entity extraction and pattern recognition
@@ -14,16 +14,16 @@ The OSINT LLM Framework provides intelligence professionals and researchers with
 
 ### Key Features
 
-- 🕷️ **Multi-Engine Search**: Integrate Google, Bing, DuckDuckGo, and custom sources
-- 🎭 **Web Scraping**: Playwright-based automation with JavaScript support
-- 🤖 **AI Analysis**: OpenAI-powered entity extraction and content analysis
-- 📊 **Smart Organization**: Subject-based research with tagging and filtering
-- 📈 **Timeline Assembly**: Chronological reconstruction of findings
-- 📄 **Report Generation**: Professional PDF reports with customizable templates
-- ⚖️ **Ethical Controls**: Built-in compliance with robots.txt and rate limiting
-- 🔄 **Real-time Monitoring**: Job progress tracking and status updates
+-  **Multi-Engine Search**: Integrate Google, Bing, DuckDuckGo, and custom sources
+-  **Web Scraping**: Playwright-based automation with JavaScript support
+-  **AI Analysis**: OpenAI-powered entity extraction and content analysis
+-  **Smart Organization**: Subject-based research with tagging and filtering
+-  **Timeline Assembly**: Chronological reconstruction of findings
+-  **Report Generation**: Professional PDF reports with customizable templates
+-  **Ethical Controls**: Built-in compliance with robots.txt and rate limiting
+-  **Real-time Monitoring**: Job progress tracking and status updates
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Technology Stack
 
@@ -38,16 +38,16 @@ The OSINT LLM Framework provides intelligence professionals and researchers with
 ### System Architecture
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Backend API   │    │   AI Pipeline   │
-│   (React/TS)    │◄──►│   (Django)      │◄──►│   (Celery Jobs) │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Web Scraping  │    │   PostgreSQL    │    │   File Storage  │
-│   (Playwright)  │    │   (Metadata)    │    │   (HTML/PDFs)   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+        
+   Frontend             Backend API          AI Pipeline   
+   (React/TS)       (Django)         (Celery Jobs) 
+        
+                                                       
+                                                       
+        
+   Web Scraping         PostgreSQL           File Storage  
+   (Playwright)         (Metadata)           (HTML/PDFs)   
+        
 ```
 
 ### Core Services
@@ -60,7 +60,7 @@ The OSINT LLM Framework provides intelligence professionals and researchers with
 6. **Export Engine**: Generate reports in multiple formats (JSONL, PDF)
 7. **Job Monitor**: Real-time progress tracking and status updates
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -74,8 +74,8 @@ The OSINT LLM Framework provides intelligence professionals and researchers with
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/osint-LLM-framework.git
-cd osint-LLM-framework
+git clone https://github.com/nestorwheelock/osint-AI-framework.git
+cd osint-AI-framework
 
 # Copy environment configuration
 cp .env.example .env
@@ -172,17 +172,17 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-## 🤖 AI-Assisted Development
+##  AI-Assisted Development
 
 This project is optimized for AI-assisted development with **Claude Code**:
 
 ### Built-in Claude Integration
 
-- **📋 Structured Planning**: Complete project documentation with PRDs, design docs, and user stories
-- **🎯 Task-Ready Workflows**: Granular task breakdowns that Claude can execute independently
-- **✅ Test-Driven Development**: Built-in TDD approach with comprehensive testing
-- **🔗 Documentation Links**: Cross-referenced documentation for full context
-- **🤖 AI Coding Briefs**: Specific instructions for each development task
+- ** Structured Planning**: Complete project documentation with PRDs, design docs, and user stories
+- ** Task-Ready Workflows**: Granular task breakdowns that Claude can execute independently
+- ** Test-Driven Development**: Built-in TDD approach with comprehensive testing
+- ** Documentation Links**: Cross-referenced documentation for full context
+- ** AI Coding Briefs**: Specific instructions for each development task
 
 ### Working with Claude Code
 
@@ -213,28 +213,28 @@ Read the design document and implement user story S-001. Follow the test-driven 
 ### Project Structure for AI Development
 
 ```
-├── docs/                          # Human-readable documentation
-│   ├── product/                   # Product requirements documents
-│   ├── design/                    # Architecture and design documents
-│   ├── infrastructure/            # DevOps and deployment guides
-│   └── devops/                    # GitHub integration documentation
-├── planning/                      # Machine-friendly planning
-│   ├── stories/                   # User stories (S-001 to S-015)
-│   ├── tasks/                     # Task breakdowns (T-001 to T-015)
-│   └── backlog.md                 # Epic overview and sprint planning
-├── backend/                       # Django application
-│   ├── apps/                      # Django apps (subjects, search, etc.)
-│   ├── config/                    # Django settings and configuration
-│   └── tests/                     # Backend tests
-├── frontend/                      # React application
-│   ├── src/                       # Source code
-│   └── tests/                     # Frontend tests
-└── .github/                       # GitHub integration
-    ├── workflows/                 # CI/CD and automation
-    └── ISSUE_TEMPLATE/            # Issue templates for different task types
+ docs/                          # Human-readable documentation
+    product/                   # Product requirements documents
+    design/                    # Architecture and design documents
+    infrastructure/            # DevOps and deployment guides
+    devops/                    # GitHub integration documentation
+ planning/                      # Machine-friendly planning
+    stories/                   # User stories (S-001 to S-015)
+    tasks/                     # Task breakdowns (T-001 to T-015)
+    backlog.md                 # Epic overview and sprint planning
+ backend/                       # Django application
+    apps/                      # Django apps (subjects, search, etc.)
+    config/                    # Django settings and configuration
+    tests/                     # Backend tests
+ frontend/                      # React application
+    src/                       # Source code
+    tests/                     # Frontend tests
+ .github/                       # GitHub integration
+     workflows/                 # CI/CD and automation
+     ISSUE_TEMPLATE/            # Issue templates for different task types
 ```
 
-## 📖 Development Guide
+##  Development Guide
 
 ### User Stories and Epic Overview
 
@@ -321,7 +321,7 @@ npx playwright test tests/subject-management.spec.ts
 npx playwright show-report
 ```
 
-## 🔧 GitHub Integration & Automation
+##  GitHub Integration & Automation
 
 ### Automated Workflows
 
@@ -350,7 +350,7 @@ The project includes comprehensive GitHub Actions automation:
 
 #### Prerequisites: GitHub CLI Authentication
 
-**⚠️ REQUIRED BEFORE AUTOMATION**: You must authenticate GitHub CLI with proper permissions.
+** REQUIRED BEFORE AUTOMATION**: You must authenticate GitHub CLI with proper permissions.
 
 ```bash
 # Install GitHub CLI (if needed)
@@ -365,7 +365,7 @@ gh auth login
 
 # Verify authentication
 gh auth status
-# Should show: ✓ Logged in with 'repo', 'project', 'read:org' scopes
+# Should show:  Logged in with 'repo', 'project', 'read:org' scopes
 ```
 
 **Authentication Troubleshooting:**
@@ -388,10 +388,10 @@ gh auth login --scopes "repo,read:org,project,gist,workflow"
 
 # 3. Verify authentication
 gh auth status
-# Should show: ✓ Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
+# Should show:  Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
 
 # 4. Switch Git to SSH for reliable operations
-git remote set-url origin git@github.com:yourusername/osint-LLM-framework.git
+git remote set-url origin git@github.com:nestorwheelock/osint-AI-framework.git
 ```
 
 #### Option 1: Automated Setup (Recommended)
@@ -405,7 +405,7 @@ Use the automation scripts to set up everything automatically:
 # Or with custom options
 ./scripts/setup-github-project.sh \
   --repo owner/repo-name \
-  --project-name "OSINT LLM Framework Development" \
+  --project-name "OSINT AI Framework Development" \
   --dry-run
 
 # Check what would be done
@@ -413,13 +413,13 @@ Use the automation scripts to set up everything automatically:
 ```
 
 **Enhanced Automation Features**:
-- ✅ **Repository Configuration**: Merge policies, auto-delete branches
-- ✅ **15 Standardized Labels**: `type-feature`, `priority-high`, `size-medium`, etc.
-- ✅ **GitHub Project Creation**: GraphQL-based with fallback to CLI
-- ✅ **Custom Project Fields**: Status (5 options), Priority (3 options), Size (3 options)
-- ✅ **Issue Generation**: Creates issues from all user story files with proper labeling
-- ✅ **Project Milestones**: MVP, Beta, v1.0, v1.1
-- ✅ **Error Recovery**: Handles authentication issues with detailed troubleshooting
+-  **Repository Configuration**: Merge policies, auto-delete branches
+-  **15 Standardized Labels**: `type-feature`, `priority-high`, `size-medium`, etc.
+-  **GitHub Project Creation**: GraphQL-based with fallback to CLI
+-  **Custom Project Fields**: Status (5 options), Priority (3 options), Size (3 options)
+-  **Issue Generation**: Creates issues from all user story files with proper labeling
+-  **Project Milestones**: MVP, Beta, v1.0, v1.1
+-  **Error Recovery**: Handles authentication issues with detailed troubleshooting
 
 #### Option 2: Manual Setup
 
@@ -461,22 +461,22 @@ For hybrid AI + client planning workflows:
 ```
 
 **Workflow Benefits**:
-- 📁 **Files remain source of truth** for AI development
-- 👥 **GitHub Projects GUI** for client collaboration
-- 🔄 **Bidirectional sync** keeps everything in sync
-- 🤖 **AI-ready updates** for next development sprint
+-  **Files remain source of truth** for AI development
+-  **GitHub Projects GUI** for client collaboration
+-  **Bidirectional sync** keeps everything in sync
+-  **AI-ready updates** for next development sprint
 
 ### Issue Templates
 
 The project includes specialized issue templates:
 
-- **📋 User Story**: Complete user story with acceptance criteria
-- **🔧 Backend Task**: Django backend development tasks
-- **🎨 Frontend Task**: React frontend development tasks
-- **🏗️ Infrastructure Task**: DevOps and environment setup tasks
-- **📊 Epic**: High-level feature tracking and management
+- ** User Story**: Complete user story with acceptance criteria
+- ** Backend Task**: Django backend development tasks
+- ** Frontend Task**: React frontend development tasks
+- ** Infrastructure Task**: DevOps and environment setup tasks
+- ** Epic**: High-level feature tracking and management
 
-## 🚢 Deployment
+##  Deployment
 
 ### Development Deployment
 
@@ -534,7 +534,7 @@ docker-compose exec backend python manage.py collectstatic --noinput
 - **Error tracking** with stack traces and context
 - **Performance metrics** for optimization insights
 
-## 🛠️ Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -591,11 +591,11 @@ sudo kill -9 $(sudo lsof -t -i :8000)
 3. **Claude Code**: Use @claude mentions for AI assistance
 4. **Community**: Contribute improvements and share experiences
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please see our contributing guidelines:
 
@@ -613,13 +613,13 @@ We welcome contributions! Please see our contributing guidelines:
 - **Security**: Never commit secrets or API keys
 - **AI Ethics**: No AI attribution in code or commits
 
-## 🔗 Useful Links
+##  Useful Links
 
-- **📋 Project Planning**: [planning/backlog.md](planning/backlog.md)
-- **🏗️ Architecture Guide**: [docs/design/osint-platform.md](docs/design/osint-platform.md)
-- **🤖 Claude Integration**: [docs/devops/github-ai-integration.md](docs/devops/github-ai-integration.md)
-- **🚀 Deployment Guide**: [docs/infrastructure/installation-guide.md](docs/infrastructure/installation-guide.md)
-- **📊 GitHub Project Setup**: [docs/devops/github-project-setup.md](docs/devops/github-project-setup.md)
+- ** Project Planning**: [planning/backlog.md](planning/backlog.md)
+- ** Architecture Guide**: [docs/design/osint-platform.md](docs/design/osint-platform.md)
+- ** Claude Integration**: [docs/devops/github-ai-integration.md](docs/devops/github-ai-integration.md)
+- ** Deployment Guide**: [docs/infrastructure/installation-guide.md](docs/infrastructure/installation-guide.md)
+- ** GitHub Project Setup**: [docs/devops/github-project-setup.md](docs/devops/github-project-setup.md)
 
 ---
 

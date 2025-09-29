@@ -1,10 +1,10 @@
-# OSINT LLM Framework - Search Infrastructure
+# OSINT AI Framework - Search Infrastructure
 
 ## Overview
 
-The OSINT LLM Framework search infrastructure provides a comprehensive, production-ready solution for conducting multi-source intelligence searches. Built with enterprise-grade architecture, it features bot detection bypass, intelligent result ranking, and automated deduplication.
+The OSINT AI Framework search infrastructure provides a comprehensive, production-ready solution for conducting multi-source intelligence searches. Built with enterprise-grade architecture, it features bot detection bypass, intelligent result ranking, and automated deduplication.
 
-## 🚀 Quick Start
+##  Quick Start
 
 ```python
 from apps.search.orchestrator import search_osint, quick_search
@@ -19,7 +19,7 @@ for result in results:
     print(f"{result.title} - {result.url}")
 ```
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Core Components
 
@@ -38,17 +38,17 @@ for result in results:
    - Intelligent result ranking and deduplication
    - Performance monitoring and statistics
 
-## 🔧 Search Adapters
+##  Search Adapters
 
 ### Available Adapters
 
 | Adapter | Status | Bot Detection Bypass | Use Case |
 |---------|--------|---------------------|----------|
-| DuckDuckGo | ✅ Primary | High | General OSINT searches |
-| Lynx | ✅ Recommended | Very High | Stealth searches |
-| Curl | ✅ Available | High | Custom header searches |
-| Google | ⚠️ Detected | Low | API access only |
-| Bing | ⚠️ Detected | Low | API access only |
+| DuckDuckGo |  Primary | High | General OSINT searches |
+| Lynx |  Recommended | Very High | Stealth searches |
+| Curl |  Available | High | Custom header searches |
+| Google |  Detected | Low | API access only |
+| Bing |  Detected | Low | API access only |
 
 ### Creating Custom Adapters
 
@@ -66,7 +66,7 @@ class CustomAdapter(BaseSearchAdapter):
         return results
 ```
 
-## 📊 Meta-Search Orchestration
+##  Meta-Search Orchestration
 
 ### Search Strategies
 
@@ -105,7 +105,7 @@ config = SearchConfig(
 orchestrator = MetaSearchOrchestrator(config)
 ```
 
-## 🔍 URL Canonicalization
+##  URL Canonicalization
 
 ### Features
 
@@ -129,7 +129,7 @@ unique_urls = deduplicate_urls(urls)
 # Result: ["https://example.com/page"] (deduplicated)
 ```
 
-## 📈 Performance Monitoring
+##  Performance Monitoring
 
 ### Getting Statistics
 
@@ -153,7 +153,7 @@ for adapter, perf in stats['adapter_performance'].items():
 3. **Configure timeouts appropriately** - Balance speed vs completeness
 4. **Use adaptive strategy for OSINT** - Optimized for intelligence gathering
 
-## 🧪 Testing
+##  Testing
 
 ### Running Tests
 
@@ -174,7 +174,7 @@ python -m pytest apps/search/tests/test_orchestrator.py -v  # 18 orchestration t
 - **TDD methodology** - tests written before implementation
 - **Integration tests** with real search engines
 
-## 🔒 Security & Ethics
+##  Security & Ethics
 
 ### Bot Detection Bypass
 
@@ -191,7 +191,7 @@ The terminal-based adapters (Lynx, Curl) are designed to bypass bot detection wh
 - Consider API access for high-volume usage
 - Follow applicable laws and regulations
 
-## 📚 API Reference
+##  API Reference
 
 ### Core Classes
 
@@ -236,7 +236,7 @@ extract_domain(url: str)
 deduplicate_urls(urls: List[str])
 ```
 
-## 🔧 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -265,7 +265,7 @@ logging.basicConfig(level=logging.DEBUG)
 results = orchestrator.search("debug query")
 ```
 
-## 🚀 Production Deployment
+##  Production Deployment
 
 ### Requirements
 
@@ -298,7 +298,7 @@ PRODUCTION_CONFIG = SearchConfig(
 )
 ```
 
-## 📈 Roadmap
+##  Roadmap
 
 ### Future Enhancements
 
@@ -319,4 +319,4 @@ PRODUCTION_CONFIG = SearchConfig(
 
 ---
 
-*Built with enterprise-grade architecture for the OSINT LLM Framework. Last updated: Sprint 2 completion.*
+*Built with enterprise-grade architecture for the OSINT AI Framework. Last updated: Sprint 2 completion.*

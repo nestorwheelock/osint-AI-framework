@@ -4,7 +4,7 @@
 **Version**: 1.0
 **Date**: September 28, 2025
 **Status**: Proposed
-**Scope**: OSINT LLM Framework & Django TDD Template
+**Scope**: OSINT AI Framework & Django TDD Template
 
 ---
 
@@ -14,7 +14,7 @@ This RFC proposes adopting React as our primary frontend technology with a clear
 
 ## Problem Statement
 
-Modern software applications require multi-platform deployment to maximize user reach and business value. Traditional approaches require separate development teams, codebases, and maintenance overhead for web, iOS, and Android platforms. Our OSINT LLM Framework and future client projects need:
+Modern software applications require multi-platform deployment to maximize user reach and business value. Traditional approaches require separate development teams, codebases, and maintenance overhead for web, iOS, and Android platforms. Our OSINT AI Framework and future client projects need:
 
 1. **Web application** for desktop and tablet users
 2. **Mobile applications** for field work and on-the-go access
@@ -101,7 +101,7 @@ UI Components:            20% reusable (different native components)
 
 ---
 
-## OSINT LLM Framework Mobile Value Proposition
+## OSINT AI Framework Mobile Value Proposition
 
 ### **Field Investigation Capabilities**
 
@@ -438,7 +438,7 @@ Mobile-Specific Features:
 4. **Long-term**: Template refinement and commercialization
 
 ### **Expected Outcomes**:
-- **Complete cross-platform capability** for OSINT LLM Framework
+- **Complete cross-platform capability** for OSINT AI Framework
 - **Enhanced template offering** for future client projects
 - **Increased project value** and competitive advantage
 - **Unified development workflow** across all platforms

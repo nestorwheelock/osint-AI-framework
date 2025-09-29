@@ -1,5 +1,5 @@
 """
-Search Engine Adapters for OSINT LLM Framework.
+Search Engine Adapters for OSINT AI Framework.
 
 Provides unified interface for different search engines including Google, Bing,
 and DuckDuckGo. Each adapter handles API-specific formatting and response parsing

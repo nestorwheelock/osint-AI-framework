@@ -9,15 +9,15 @@ This document outlines the comprehensive integration strategy for combining our 
 ### Current Planning System (Source of Truth)
 ```
 planning/
-├── stories/           # User stories (S-000 to S-015)
-│   ├── S-000-environment-setup.md
-│   ├── S-001-create-subject.md
-│   └── ...
-├── tasks/            # Implementation tasks (T-000 to T-015)
-│   ├── T-000-environment-setup.md
-│   ├── T-001-create-subject.md
-│   └── ...
-└── backlog.md        # Epic overview and sprint planning
+ stories/           # User stories (S-000 to S-015)
+    S-000-environment-setup.md
+    S-001-create-subject.md
+    ...
+ tasks/            # Implementation tasks (T-000 to T-015)
+    T-000-environment-setup.md
+    T-001-create-subject.md
+    ...
+ backlog.md        # Epic overview and sprint planning
 ```
 
 ### GitHub Integration Layer
@@ -33,7 +33,7 @@ Claude Code       ←→    AI-Assisted Development
 
 ## Prerequisites & Setup Requirements
 
-### 🔑 GitHub CLI Authentication
+###  GitHub CLI Authentication
 
 **CRITICAL**: Before running any automation scripts, you must authenticate GitHub CLI with proper permissions.
 
@@ -61,11 +61,11 @@ gh auth login
 #### Required Permissions
 
 The GitHub token needs these scopes for full automation:
-- ✅ **repo** - Full repository access
-- ✅ **read:org** - Read organization membership
-- ✅ **project** - Manage GitHub Projects
-- ✅ **write:discussion** - Create discussions
-- ✅ **gist** - Create gists
+-  **repo** - Full repository access
+-  **read:org** - Read organization membership
+-  **project** - Manage GitHub Projects
+-  **write:discussion** - Create discussions
+-  **gist** - Create gists
 
 #### Verify Authentication
 
@@ -74,14 +74,14 @@ The GitHub token needs these scopes for full automation:
 gh auth status
 
 # Should show something like:
-# ✓ Logged in to github.com account username (keyring)
+#  Logged in to github.com account username (keyring)
 # - Token scopes: 'gist', 'project', 'read:org', 'repo'
 
 # Test repository access
 gh repo view
 ```
 
-### ⚠️ Common Authentication Issues & Solutions
+###  Common Authentication Issues & Solutions
 
 | Error | Cause | Complete Solution |
 |-------|-------|-------------------|
@@ -92,7 +92,7 @@ gh repo view
 | `Repository not found` | Token lacks repo access | Verify repository name and re-authenticate |
 | `GraphQL createProjectV2 failed` | Missing project scope | Include `project` in scopes: `--scopes "repo,read:org,project,gist,workflow"` |
 
-### 🔧 Complete Authentication Reset Procedure
+###  Complete Authentication Reset Procedure
 
 **When automation fails with authentication errors:**
 
@@ -109,19 +109,19 @@ gh auth login --scopes "repo,read:org,project,gist,workflow"
 
 # Step 3: Verify authentication is working
 gh auth status
-# Must show: ✓ Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
+# Must show:  Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
 
 # Step 4: Test basic API access
 gh api user --jq '.login'  # Should return your username
 
 # Step 5: Switch Git remote to SSH for reliable operations
-git remote set-url origin git@github.com:yourusername/yourrepo.git
+git remote set-url origin git@github.com:nestorwheelock/osint-AI-framework.git
 
 # Step 6: Run automation
-./scripts/setup-github-project.sh --repo yourusername/yourrepo
+./scripts/setup-github-project.sh --repo nestorwheelock/osint-AI-framework
 ```
 
-### 🛠️ Manual Fallback Options
+###  Manual Fallback Options
 
 If automation fails due to authentication issues, you can manually:
 
@@ -267,7 +267,7 @@ Type Labels:
 
 ##### CLAUDE.md (Repository Root)
 ```markdown
-# OSINT LLM Framework - Claude Code Guidelines
+# OSINT AI Framework - Claude Code Guidelines
 
 ## Project Overview
 AI-assisted OSINT research platform using FastAPI, React, PostgreSQL, and Docker.
@@ -466,34 +466,34 @@ jobs:
 - **Project Health**: Track completion rates and cycle times
 - **AI Usage**: Monitor Claude API usage and effectiveness
 
-### 🚀 Latest Automation Enhancements (v2.0)
+###  Latest Automation Enhancements (v2.0)
 
 #### New Features & Bug Fixes
-- **✅ Fixed Label Parsing**: Resolved shell syntax errors in label creation
-- **✅ GraphQL Project Creation**: Advanced project setup with custom fields
-- **✅ Authentication Recovery**: Comprehensive error handling and fallback methods
-- **✅ Custom Field Automation**: Status, Priority, and Size fields created automatically
-- **✅ Git Authentication**: SSH fallback for reliable repository operations
+- ** Fixed Label Parsing**: Resolved shell syntax errors in label creation
+- ** GraphQL Project Creation**: Advanced project setup with custom fields
+- ** Authentication Recovery**: Comprehensive error handling and fallback methods
+- ** Custom Field Automation**: Status, Priority, and Size fields created automatically
+- ** Git Authentication**: SSH fallback for reliable repository operations
 
 #### Enhanced Project Field Setup
 The automation now automatically creates these custom fields:
 
 **Status Field (Single Select)**:
-- 🔘 Backlog (Gray)
-- 🟡 Ready (Yellow)
-- 🔵 In Progress (Blue)
-- 🟠 Review (Orange)
-- 🟢 Done (Green)
+-  Backlog (Gray)
+-  Ready (Yellow)
+-  In Progress (Blue)
+-  Review (Orange)
+-  Done (Green)
 
 **Priority Field (Single Select)**:
-- 🔴 High (Red)
-- 🟡 Medium (Yellow)
-- 🟢 Low (Green)
+-  High (Red)
+-  Medium (Yellow)
+-  Low (Green)
 
 **Size Field (Single Select)**:
-- 🟢 Small (Green) - 1-2 days
-- 🟡 Medium (Yellow) - 3-5 days
-- 🔴 Large (Red) - 1+ weeks
+-  Small (Green) - 1-2 days
+-  Medium (Yellow) - 3-5 days
+-  Large (Red) - 1+ weeks
 
 ### Detailed Script Operations
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides step-by-step instructions for setting up a GitHub Project board to manage the OSINT LLM Framework development using our file-based planning system integrated with GitHub's native tools.
+This guide provides step-by-step instructions for setting up a GitHub Project board to manage the OSINT AI Framework development using our file-based planning system integrated with GitHub's native tools.
 
 ## Project Creation
 
@@ -11,7 +11,7 @@ This guide provides step-by-step instructions for setting up a GitHub Project bo
 2. Go to "Projects" tab
 3. Click "New project"
 4. Choose "Table" view as the default
-5. Name: "OSINT LLM Framework Epic"
+5. Name: "OSINT AI Framework Epic"
 6. Description: "AI-assisted OSINT research platform development tracking"
 
 ### 2. Project Configuration
@@ -26,10 +26,10 @@ This guide provides step-by-step instructions for setting up a GitHub Project bo
 ### Priority Field
 - **Field Type**: Single select
 - **Options**:
-  - 🔥 Highest (S-000 Infrastructure)
-  - ⭐ High (S-001-010, S-015 Core Features)
-  - 📈 Medium (S-011-014 Enhancements)
-  - 🔮 Low (Future backlog)
+  -  Highest (S-000 Infrastructure)
+  -  High (S-001-010, S-015 Core Features)
+  -  Medium (S-011-014 Enhancements)
+  -  Low (Future backlog)
 
 ### Epic Field
 - **Field Type**: Single select
@@ -64,13 +64,13 @@ This guide provides step-by-step instructions for setting up a GitHub Project bo
 ### Component Field
 - **Field Type**: Multi-select
 - **Options**:
-  - 🏗️ Infrastructure
-  - 🔧 Backend
-  - 🎨 Frontend
-  - 🗄️ Database
-  - ⚙️ DevOps
-  - 🔌 Integration
-  - 📝 Documentation
+  -  Infrastructure
+  -  Backend
+  -  Frontend
+  -  Database
+  -  DevOps
+  -  Integration
+  -  Documentation
 
 ### Story Points Field
 - **Field Type**: Single select
@@ -98,10 +98,10 @@ This guide provides step-by-step instructions for setting up a GitHub Project bo
 - **Sort by**: Priority (Highest first)
 - **Filter**: All items
 - **Columns**:
-  - 📋 Todo
-  - 🔄 In Progress
-  - 👀 In Review
-  - ✅ Done
+  -  Todo
+  -  In Progress
+  -  In Review
+  -  Done
 
 ### 2. Epic Overview
 - **Layout**: Table

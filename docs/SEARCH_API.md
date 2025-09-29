@@ -217,31 +217,31 @@ def extract_domain(url: str) -> str:
 ### Available Adapters
 
 #### DuckDuckGoSearchAdapter
-- **Reliability**: ⭐⭐⭐⭐⭐
+- **Reliability**: 
 - **Bot Detection**: Low risk
 - **Rate Limits**: Generous
 - **Use Case**: Primary OSINT searches
 
 #### LynxSearchAdapter
-- **Reliability**: ⭐⭐⭐⭐
+- **Reliability**: 
 - **Bot Detection**: Very low risk
 - **Rate Limits**: Excellent
 - **Use Case**: Stealth investigations
 
 #### CurlSearchAdapter
-- **Reliability**: ⭐⭐⭐
+- **Reliability**: 
 - **Bot Detection**: Low risk
 - **Rate Limits**: Good
 - **Use Case**: Custom header searches
 
 #### GoogleSearchAdapter
-- **Reliability**: ⭐⭐⭐⭐⭐ (with API)
+- **Reliability**:  (with API)
 - **Bot Detection**: High risk (scraping)
 - **Rate Limits**: Restrictive
 - **Use Case**: API-based searches only
 
 #### BingSearchAdapter
-- **Reliability**: ⭐⭐⭐⭐
+- **Reliability**: 
 - **Bot Detection**: Medium risk
 - **Rate Limits**: Moderate
 - **Use Case**: API-based searches

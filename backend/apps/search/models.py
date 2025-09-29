@@ -1,5 +1,5 @@
 """
-Search application models for OSINT LLM Framework.
+Search application models for OSINT AI Framework.
 
 This module contains Django models for storing search configurations,
 results, and metadata for the meta-search functionality.

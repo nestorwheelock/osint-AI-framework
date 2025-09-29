@@ -71,8 +71,8 @@ docker-compose --version
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/osint-LLM-framework.git
-cd osint-LLM-framework
+git clone https://github.com/nestorwheelock/osint-AI-framework.git
+cd osint-AI-framework
 
 # Verify repository structure
 ls -la
@@ -258,8 +258,8 @@ sudo systemctl enable docker
 #### 2. Deploy Application
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/osint-LLM-framework.git
-cd osint-LLM-framework
+git clone https://github.com/nestorwheelock/osint-AI-framework.git
+cd osint-AI-framework
 
 # Configure production environment
 cp .env.production .env
@@ -335,7 +335,7 @@ sudo crontab -e
 
 set -e
 
-echo "🚀 Setting up OSINT Platform development environment..."
+echo " Setting up OSINT Platform development environment..."
 
 # Check prerequisites
 command -v docker >/dev/null 2>&1 || { echo "Docker is required but not installed. Aborting." >&2; exit 1; }
@@ -343,18 +343,18 @@ command -v docker-compose >/dev/null 2>&1 || { echo "Docker Compose is required 
 
 # Create environment file
 if [ ! -f .env ]; then
-    echo "📝 Creating environment file..."
+    echo " Creating environment file..."
     cp .env.example .env
-    echo "⚠️  Please edit .env with your configuration before continuing."
+    echo "  Please edit .env with your configuration before continuing."
     echo "   Required: OPENAI_API_KEY, SECRET_KEY"
     exit 1
 fi
 
 # Build and start services
-echo "🏗️  Building Docker images..."
+echo "  Building Docker images..."
 docker-compose -f docker-compose.dev.yml build
 
-echo "🗄️  Starting database..."
+echo "  Starting database..."
 docker-compose -f docker-compose.dev.yml up -d database redis
 
 # Wait for database to be ready
@@ -362,18 +362,18 @@ echo "⏳ Waiting for database to be ready..."
 timeout 60 bash -c 'until docker-compose exec database pg_isready -U osint_user; do sleep 2; done'
 
 # Run database migrations
-echo "🔄 Running database migrations..."
+echo " Running database migrations..."
 docker-compose -f docker-compose.dev.yml run --rm backend alembic upgrade head
 
 # Seed development data
-echo "🌱 Seeding development data..."
+echo " Seeding development data..."
 docker-compose -f docker-compose.dev.yml run --rm backend python scripts/seed_dev_data.py
 
 # Start all services
-echo "🚀 Starting all services..."
+echo " Starting all services..."
 docker-compose -f docker-compose.dev.yml up -d
 
-echo "✅ Development environment ready!"
+echo " Development environment ready!"
 echo "   Backend: http://localhost:8000"
 echo "   Frontend: http://localhost:3000"
 echo "   API Docs: http://localhost:8000/docs"
@@ -387,43 +387,43 @@ echo "   API Docs: http://localhost:8000/docs"
 
 set -e
 
-echo "🚀 Deploying OSINT Platform to production..."
+echo " Deploying OSINT Platform to production..."
 
 # Verify environment
 if [ "$ENVIRONMENT" != "production" ]; then
-    echo "❌ This script should only run in production environment"
+    echo " This script should only run in production environment"
     exit 1
 fi
 
 # Pull latest changes
-echo "📥 Pulling latest changes..."
+echo " Pulling latest changes..."
 git pull origin main
 
 # Build production images
-echo "🏗️  Building production images..."
+echo "  Building production images..."
 docker-compose -f docker-compose.prod.yml build
 
 # Backup database
-echo "💾 Creating database backup..."
+echo " Creating database backup..."
 ./scripts/backup-database.sh
 
 # Update database schema
-echo "🔄 Updating database schema..."
+echo " Updating database schema..."
 docker-compose -f docker-compose.prod.yml run --rm backend alembic upgrade head
 
 # Deploy with rolling update
-echo "🔄 Performing rolling update..."
+echo " Performing rolling update..."
 docker-compose -f docker-compose.prod.yml up -d --remove-orphans
 
 # Health check
-echo "🏥 Performing health check..."
+echo " Performing health check..."
 timeout 60 bash -c 'until curl -f http://localhost/healthz; do sleep 5; done'
 
 # Clean up old images
-echo "🧹 Cleaning up old images..."
+echo " Cleaning up old images..."
 docker image prune -f
 
-echo "✅ Production deployment complete!"
+echo " Production deployment complete!"
 ```
 
 ### Testing Script
@@ -434,7 +434,7 @@ echo "✅ Production deployment complete!"
 
 set -e
 
-echo "🧪 Running OSINT Platform test suite..."
+echo " Running OSINT Platform test suite..."
 
 # Start test dependencies
 docker-compose -f docker-compose.test.yml up -d database redis
@@ -443,21 +443,21 @@ docker-compose -f docker-compose.test.yml up -d database redis
 timeout 60 bash -c 'until docker-compose -f docker-compose.test.yml exec database pg_isready -U osint_user; do sleep 2; done'
 
 # Run backend tests
-echo "🐍 Running backend tests..."
+echo " Running backend tests..."
 docker-compose -f docker-compose.test.yml run --rm backend pytest --cov=app --cov-report=xml --cov-report=term-missing
 
 # Run frontend tests
-echo "⚛️  Running frontend tests..."
+echo "  Running frontend tests..."
 docker-compose -f docker-compose.test.yml run --rm frontend npm test -- --coverage --watchAll=false
 
 # Run E2E tests
-echo "🎭 Running E2E tests..."
+echo " Running E2E tests..."
 docker-compose -f docker-compose.test.yml run --rm e2e npx playwright test
 
 # Cleanup
 docker-compose -f docker-compose.test.yml down -v
 
-echo "✅ All tests passed!"
+echo " All tests passed!"
 ```
 
 ## Troubleshooting

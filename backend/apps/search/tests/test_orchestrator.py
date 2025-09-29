@@ -359,7 +359,7 @@ class MetaSearchIntegrationTest(TestCase):
             mock_adapter.get_name.return_value = "duckduckgo"
             mock_adapter.search.return_value = [
                 SearchResult(
-                    title="OSINT LLM Framework - Open Source Intelligence",
+                    title="OSINT AI Framework - Open Source Intelligence",
                     url="https://osintframework.com",
                     snippet="Collection of OSINT tools and resources",
                     source="duckduckgo",

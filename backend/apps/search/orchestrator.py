@@ -1,5 +1,5 @@
 """
-Meta-Search Orchestration Service for OSINT LLM Framework.
+Meta-Search Orchestration Service for OSINT AI Framework.
 
 Coordinates multiple search adapters to provide comprehensive, deduplicated,
 and ranked search results from various sources. Supports different search

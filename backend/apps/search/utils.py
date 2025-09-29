@@ -1,5 +1,5 @@
 """
-URL canonicalization utilities for OSINT LLM Framework search functionality.
+URL canonicalization utilities for OSINT AI Framework search functionality.
 
 This module provides utilities for normalizing and canonicalizing URLs to ensure
 consistent handling across different search engines and data sources.

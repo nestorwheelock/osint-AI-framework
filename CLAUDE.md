@@ -1,4 +1,4 @@
-# OSINT LLM Framework - Claude Code Guidelines
+# OSINT AI Framework - Claude Code Guidelines
 
 ## Project Overview
 
@@ -38,7 +38,7 @@
 - **Documentation**: Inline comments for complex logic, API documentation via OpenAPI
 
 ### Security Requirements
-- **🚨 CRITICAL - AI ATTRIBUTION PROHIBITION**:
+- ** CRITICAL - AI ATTRIBUTION PROHIBITION**:
   - NEVER include any Claude, AI, or assistant attribution in code, comments, commits, or documentation
   - NEVER use phrases like "Generated with Claude", "Co-Authored-By: Claude", "Built with Claude Code", etc.
   - NEVER reference AI assistance, Claude mentions, or automated generation in any deliverables
@@ -59,10 +59,10 @@
 ### File-Based Planning (Source of Truth)
 ```
 planning/
-├── stories/           # User stories S-000 to S-015
-├── tasks/            # Implementation tasks T-000 to T-015
-├── backlog.md        # Epic overview and sprint planning
-└── dependencies/     # Inter-story dependencies
+ stories/           # User stories S-000 to S-015
+ tasks/            # Implementation tasks T-000 to T-015
+ backlog.md        # Epic overview and sprint planning
+ dependencies/     # Inter-story dependencies
 ```
 
 ### AI Coding Briefs
@@ -243,7 +243,7 @@ Claude has access to:
 - Request explanation of implementation decisions
 - Ask for test coverage and validation strategies
 
-## ⚠️ CRITICAL SECURITY REMINDER
+##  CRITICAL SECURITY REMINDER
 
 **NEVER ADD AI ATTRIBUTION**: This project has a strict NO AI ATTRIBUTION policy for security and compliance reasons. Never include any references to Claude, AI assistance, or automated generation in:
 - Code comments

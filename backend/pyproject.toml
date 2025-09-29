@@ -1,7 +1,7 @@
 [project]
-name = "osint-llm-framework-backend"
+name = "osint-ai-framework-backend"
 version = "0.1.0"
-description = "Django Backend for OSINT LLM Framework"
+description = "Django Backend for OSINT AI Framework"
 requires-python = ">=3.10"
 dependencies = [
   "django>=4.2.7",

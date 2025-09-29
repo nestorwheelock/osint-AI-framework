@@ -137,7 +137,7 @@ docs/
 ### Phase 1: Core Template Creation
 ```bash
 # Create django-tdd-template repository
-git clone osint-LLM-framework django-tdd-template
+git clone osint-AI-framework django-tdd-template
 cd django-tdd-template
 
 # Remove OSINT-specific code
