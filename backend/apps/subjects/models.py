@@ -76,6 +76,12 @@ class Subject(models.Model):
                 {"name": "Name field is required and cannot be empty."}
             )
 
+        # Validate description max length
+        if self.description and len(self.description) > 1000:
+            raise ValidationError(
+                {"description": "Description cannot exceed 1000 characters."}
+            )
+
         # Check for duplicate names (excluding self for updates)
         existing = Subject.objects.filter(name=self.name)
         if self.pk:

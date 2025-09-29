@@ -6,7 +6,7 @@ set -e
 
 # Configuration
 REPO_NAME=""
-PROJECT_NAME="OSINT Framework Development"
+PROJECT_NAME="OSINT LLM Framework Development"
 DRY_RUN=false
 VERBOSE=false
 
@@ -399,7 +399,7 @@ USAGE:
 
 OPTIONS:
     --repo REPO_NAME        Repository name (owner/repo format)
-    --project-name NAME     Name for GitHub Project (default: "OSINT Framework Development")
+    --project-name NAME     Name for GitHub Project (default: "OSINT LLM Framework Development")
     --dry-run              Show what would be done without making changes
     --verbose              Show detailed command output
     --help                 Show this help message

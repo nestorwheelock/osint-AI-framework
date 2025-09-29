@@ -23,7 +23,7 @@ gh auth status
 # Should show: ✓ Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
 
 # 4. Test repository access
-gh repo view nestorwheelock/osint-framework
+gh repo view nestorwheelock/osint-LLM-framework
 ```
 
 ## GitHub Projects V2 Permissions
@@ -39,7 +39,7 @@ gh repo view nestorwheelock/osint-framework
 #### 1. Create Project via CLI
 ```bash
 # Create user project
-gh project create --title "OSINT Framework Development" --owner "@me"
+gh project create --title "OSINT LLM Framework Development" --owner "@me"
 
 # Create organization project (if member)
 gh project create --title "Project Name" --owner "organization-name"
@@ -290,13 +290,13 @@ gh auth status | grep "Token scopes"
 gh api graphql -f query='query { viewer { login projectsV2(first:1) { nodes { title } } } }'
 
 # Test repository access
-gh repo view nestorwheelock/osint-framework --json name,owner
+gh repo view nestorwheelock/osint-LLM-framework --json name,owner
 
 # Test the enhanced automation (dry run)
-./scripts/setup-github-project.sh --repo nestorwheelock/osint-framework --dry-run
+./scripts/setup-github-project.sh --repo nestorwheelock/osint-LLM-framework --dry-run
 
 # Full automation test
-unset GH_TOKEN && ./scripts/setup-github-project.sh --repo nestorwheelock/osint-framework
+unset GH_TOKEN && ./scripts/setup-github-project.sh --repo nestorwheelock/osint-LLM-framework
 ```
 
 ## Success Metrics

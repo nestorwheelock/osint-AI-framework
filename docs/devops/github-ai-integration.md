@@ -267,7 +267,7 @@ Type Labels:
 
 ##### CLAUDE.md (Repository Root)
 ```markdown
-# OSINT Framework - Claude Code Guidelines
+# OSINT LLM Framework - Claude Code Guidelines
 
 ## Project Overview
 AI-assisted OSINT research platform using FastAPI, React, PostgreSQL, and Docker.

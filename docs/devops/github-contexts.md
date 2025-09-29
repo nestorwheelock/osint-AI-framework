@@ -1,10 +1,10 @@
 # GitHub Contexts: Repository vs User Account
 
 ## Overview
-Our OSINT Framework uses both repository-level and user account-level GitHub features. Understanding the correct context is crucial for proper automation and visibility.
+Our OSINT LLM Framework uses both repository-level and user account-level GitHub features. Understanding the correct context is crucial for proper automation and visibility.
 
-## Repository Level (`nestorwheelock/osint-framework`)
-**Location**: https://github.com/nestorwheelock/osint-framework
+## Repository Level (`nestorwheelock/osint-LLM-framework`)
+**Location**: https://github.com/nestorwheelock/osint-LLM-framework
 
 **Features**:
 -  **Issues**: Created and managed at repository level
@@ -48,7 +48,7 @@ gh api graphql -f query='
 ## Current Configuration
 
 ### Working Correctly:
-- **Issues**: Repository level (`nestorwheelock/osint-framework/issues`)
+- **Issues**: Repository level (`nestorwheelock/osint-LLM-framework/issues`)
 - **Projects**: User account level (Project #5 at user level)
 - **Project Updates**: Our bulk update script correctly targets user-level Project #5
 

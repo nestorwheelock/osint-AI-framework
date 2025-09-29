@@ -18,7 +18,7 @@ git commit -m "$CHECKPOINT_MSG
 
 📋 TDD Checkpoint - automated commit for development milestone
 
-🔧 Generated with OSINT Framework TDD workflow"
+🔧 Generated with OSINT LLM Framework TDD workflow"
 
 if [ $? -eq 0 ]; then
     echo "✅ Committed: $CHECKPOINT_MSG"

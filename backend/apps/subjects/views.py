@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django.db import transaction
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.http import Http404
 
 from .models import Subject
 from .serializers import (
@@ -116,7 +117,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(instance)
             return Response(serializer.data)
 
-        except Subject.DoesNotExist:
+        except Http404:
             return Response(
                 {"error": "Subject not found."}, status=status.HTTP_404_NOT_FOUND
             )
@@ -149,7 +150,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
             response_serializer = SubjectSerializer(subject)
             return Response(response_serializer.data)
 
-        except Subject.DoesNotExist:
+        except Http404:
             return Response(
                 {"error": "Subject not found."}, status=status.HTTP_404_NOT_FOUND
             )
@@ -184,7 +185,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
             response_serializer = SubjectSerializer(subject)
             return Response(response_serializer.data)
 
-        except Subject.DoesNotExist:
+        except Http404:
             return Response(
                 {"error": "Subject not found."}, status=status.HTTP_404_NOT_FOUND
             )
@@ -212,7 +213,7 @@ class SubjectViewSet(viewsets.ModelViewSet):
 
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-        except Subject.DoesNotExist:
+        except Http404:
             return Response(
                 {"error": "Subject not found."}, status=status.HTTP_404_NOT_FOUND
             )

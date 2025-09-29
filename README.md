@@ -1,10 +1,10 @@
-# OSINT Research Platform
+# OSINT LLM Framework
 
-A comprehensive, AI-assisted Open Source Intelligence research platform designed for systematic data collection, analysis, and reporting. Built with Django and modern DevOps practices, featuring automated workflows and Claude Code integration.
+An AI-powered Open Source Intelligence framework that leverages Large Language Models for intelligent data collection, analysis, and reporting. Built with Django and modern DevOps practices, featuring automated workflows and Claude Code integration.
 
 ## 🎯 Project Overview
 
-The OSINT Research Platform provides intelligence professionals and researchers with powerful tools to:
+The OSINT LLM Framework provides intelligence professionals and researchers with powerful AI-enhanced tools to:
 
 - **Systematically collect data** from multiple web sources using ethical scraping
 - **Analyze content** with AI-powered entity extraction and pattern recognition
@@ -74,8 +74,8 @@ The OSINT Research Platform provides intelligence professionals and researchers 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/osint-framework.git
-cd osint-framework
+git clone https://github.com/yourusername/osint-LLM-framework.git
+cd osint-LLM-framework
 
 # Copy environment configuration
 cp .env.example .env
@@ -391,7 +391,7 @@ gh auth status
 # Should show: ✓ Token scopes: 'gist', 'project', 'read:org', 'repo', 'workflow'
 
 # 4. Switch Git to SSH for reliable operations
-git remote set-url origin git@github.com:yourusername/yourrepo.git
+git remote set-url origin git@github.com:yourusername/osint-LLM-framework.git
 ```
 
 #### Option 1: Automated Setup (Recommended)
@@ -405,7 +405,7 @@ Use the automation scripts to set up everything automatically:
 # Or with custom options
 ./scripts/setup-github-project.sh \
   --repo owner/repo-name \
-  --project-name "OSINT Framework Development" \
+  --project-name "OSINT LLM Framework Development" \
   --dry-run
 
 # Check what would be done

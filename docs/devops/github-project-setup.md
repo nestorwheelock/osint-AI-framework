@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides step-by-step instructions for setting up a GitHub Project board to manage the OSINT Framework development using our file-based planning system integrated with GitHub's native tools.
+This guide provides step-by-step instructions for setting up a GitHub Project board to manage the OSINT LLM Framework development using our file-based planning system integrated with GitHub's native tools.
 
 ## Project Creation
 
@@ -11,7 +11,7 @@ This guide provides step-by-step instructions for setting up a GitHub Project bo
 2. Go to "Projects" tab
 3. Click "New project"
 4. Choose "Table" view as the default
-5. Name: "OSINT Framework Epic"
+5. Name: "OSINT LLM Framework Epic"
 6. Description: "AI-assisted OSINT research platform development tracking"
 
 ### 2. Project Configuration

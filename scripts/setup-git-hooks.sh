@@ -3,7 +3,7 @@
 
 set -e
 
-echo "🔧 Setting up Git hooks for OSINT Framework..."
+echo "🔧 Setting up Git hooks for OSINT LLM Framework..."
 
 # Create .git/hooks directory if it doesn't exist
 mkdir -p .git/hooks

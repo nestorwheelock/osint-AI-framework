@@ -71,8 +71,8 @@ docker-compose --version
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/osint-framework.git
-cd osint-framework
+git clone https://github.com/yourusername/osint-LLM-framework.git
+cd osint-LLM-framework
 
 # Verify repository structure
 ls -la
@@ -258,8 +258,8 @@ sudo systemctl enable docker
 #### 2. Deploy Application
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/osint-framework.git
-cd osint-framework
+git clone https://github.com/yourusername/osint-LLM-framework.git
+cd osint-LLM-framework
 
 # Configure production environment
 cp .env.production .env

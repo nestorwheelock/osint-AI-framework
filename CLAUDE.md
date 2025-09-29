@@ -1,4 +1,4 @@
-# OSINT Framework - Claude Code Guidelines
+# OSINT LLM Framework - Claude Code Guidelines
 
 ## Project Overview
 
