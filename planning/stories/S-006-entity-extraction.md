@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T17:42:31.116269'
+last_synced: '2025-09-28T19:58:27.674304'
 status: todo
 ```
 
@@ -75,10 +75,10 @@ constraints:
   dependencies: "OpenAI API, transformers, spaCy for local models"
   testing: "Mock AI APIs for unit tests, real models for integration"
   security:
-    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
-    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
-    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
-    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
+    - " CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - " CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - " CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - " CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
 tests_to_make_pass:
   - backend/app/tests/test_ai_analyzer.py::test_entity_extraction_success
   - backend/app/tests/test_ai_analyzer.py::test_entity_deduplication

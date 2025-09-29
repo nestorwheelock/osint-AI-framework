@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T17:42:31.115499'
+last_synced: '2025-09-28T19:58:27.671818'
 status: todo
 ```
 
@@ -75,10 +75,10 @@ constraints:
     - backend/app/tests/test_url_utils.py
   testing: "No live HTTP in unit tests; adapters accept fixture payloads"
   security:
-    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
-    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
-    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
-    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
+    - " CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - " CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - " CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - " CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
 tests_to_make_pass:
   - backend/app/tests/test_url_utils.py::test_canonicalize_url_variants
   - backend/app/tests/test_search.py::test_meta_search_collapses_duplicates

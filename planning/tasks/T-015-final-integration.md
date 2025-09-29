@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T17:42:31.130770'
+last_synced: '2025-09-28T19:58:27.703250'
 status: todo
 ```
 
@@ -389,41 +389,41 @@ volumes:
 #!/bin/bash
 set -euo pipefail
 
-echo "🚀 Starting production deployment..."
+echo " Starting production deployment..."
 
 # Pre-deployment checks
-echo "🔍 Running pre-deployment checks..."
+echo " Running pre-deployment checks..."
 ./scripts/check-environment.sh production
 ./scripts/test-database-connection.sh
 
 # Backup current state
-echo "💾 Creating backup..."
+echo " Creating backup..."
 ./scripts/backup-production.sh
 
 # Build and deploy
-echo "🏗️  Building production images..."
+echo "  Building production images..."
 docker-compose -f docker-compose.prod.yml build --no-cache
 
-echo "🔄 Performing blue-green deployment..."
+echo " Performing blue-green deployment..."
 ./scripts/blue-green-deploy.sh
 
 # Post-deployment validation
-echo "🏥 Running health checks..."
+echo " Running health checks..."
 ./scripts/health-check.sh
 
 # Database migrations
-echo "📊 Running database migrations..."
+echo " Running database migrations..."
 docker-compose -f docker-compose.prod.yml exec backend alembic upgrade head
 
 # Performance optimization
-echo "⚡ Applying performance optimizations..."
+echo " Applying performance optimizations..."
 docker-compose -f docker-compose.prod.yml exec backend python scripts/create_indexes.py
 
 # Final validation
-echo "✅ Final validation..."
+echo " Final validation..."
 ./scripts/validate-deployment.sh
 
-echo "🎉 Production deployment complete!"
+echo " Production deployment complete!"
 ```
 
 ### Step 5: Monitoring and Observability

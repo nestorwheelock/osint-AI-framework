@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T17:42:31.115892'
+last_synced: '2025-09-28T19:58:27.673014'
 status: todo
 ```
 
@@ -68,10 +68,10 @@ constraints:
   dependencies: "BeautifulSoup, langdetect, readability-lxml"
   testing: "Test with diverse HTML samples and languages"
   security:
-    - "🚨 CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
-    - "🚨 CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
-    - "🚨 CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
-    - "🚨 CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
+    - " CRITICAL: NEVER include any AI, Claude, or assistant attribution anywhere"
+    - " CRITICAL: NEVER use phrases like 'Generated with Claude', 'Co-Authored-By: Claude', etc."
+    - " CRITICAL: Do not reference AI assistance in code, comments, commits, or any deliverables"
+    - " CRITICAL: This is a SECURITY REQUIREMENT - violations will be automatically detected and removed"
 tests_to_make_pass:
   - backend/app/tests/test_text_processor.py::test_extract_clean_text
   - backend/app/tests/test_text_processor.py::test_language_detection

@@ -1,5 +1,5 @@
 ```yaml
-last_synced: '2025-09-28T17:42:31.121843'
+last_synced: '2025-09-28T19:58:27.688017'
 status: todo
 ```
 
@@ -56,16 +56,16 @@ As a product owner and development team, I need to integrate all OSINT platform 
 
 ### Integration Architecture
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Backend API   │    │   Database      │
-│   (React/TS)    │◄──►│   (FastAPI)     │◄──►│   (PostgreSQL)  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Web Scraping  │    │   AI Processing │    │   Job Queue     │
-│   (Playwright)  │    │   (OpenAI API)  │    │   (Redis)       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+
+   Frontend             Backend API          Database
+   (React/TS)       (FastAPI)        (PostgreSQL)
+
+
+
+
+   Web Scraping         AI Processing        Job Queue
+   (Playwright)         (OpenAI API)         (Redis)
+
 ```
 
 ### Performance Targets

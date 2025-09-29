@@ -1,6 +1,6 @@
 ```yaml
-last_synced: '2025-09-28T17:42:31.115088'
-status: todo
+last_synced: '2025-09-28T19:58:27.670585'
+status: completed
 ```
 
 # S-001 — Create Subject

@@ -1,18 +1,18 @@
 [project]
-name = "web-research-backend"
+name = "osint-framework-backend"
 version = "0.1.0"
-description = "Backend for Web Research Platform"
+description = "Django Backend for OSINT Investigation Framework"
 requires-python = ">=3.10"
 dependencies = [
-  "fastapi",
-  "uvicorn[standard]",
-  "pydantic>=2",
+  "django>=4.2.7",
+  "djangorestframework>=3.14.0",
   "python-dotenv",
+  "psycopg2-binary",
 ]
 [project.optional-dependencies]
-dev = ["pytest", "httpx", "pytest-asyncio", "anyio", "coverage", "mypy"]
+dev = ["pytest", "pytest-django", "coverage", "mypy"]
 
 [tool.pytest.ini_options]
-asyncio_mode = "auto"
+DJANGO_SETTINGS_MODULE = "settings"
 python_files = "test_*.py"
-addopts = "-q"
+addopts = "-q --reuse-db"
